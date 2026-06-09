@@ -5994,16 +5994,6 @@ body.theme-energetic .blackhole-background {
     .space-particles .particle { display: none; }
     .comet { display: none; }
     * { -webkit-overflow-scrolling: touch; }
-
-html {
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-}
-
-body {
-    overflow-x: hidden;
-    overscroll-behavior-y: none;
-}
     html { scroll-behavior: smooth; }
 }
 
@@ -6048,4 +6038,106 @@ body {
         opacity: 1 !important;
         transform: none !important;
     }
+}
+
+/* ============================================
+   MOBILE FIXES - Added June 2026
+   Desktop untouched. Mobile only.
+   ============================================ */
+
+/* 1. Hide solar system on mobile - it's the biggest perf killer */
+@media (max-width: 768px) {
+    .solar-system { display: none !important; }
+
+    /* 2. Reduce cosmic scene opacity so text stays readable */
+    .cosmic-scene { opacity: 0.25 !important; }
+
+    /* 3. Fix navbar - hamburger was defined but hamburger display wasn't set on desktop */
+    .hamburger { display: none; }
+}
+@media (max-width: 768px) {
+    .hamburger { display: flex !important; }
+}
+
+/* 4. Fix hero stats - was 4 columns on small screens, now wraps to 2x2 */
+@media (max-width: 600px) {
+    .hero-stats {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.8rem !important;
+    }
+    .stat {
+        padding: 0.8rem !important;
+        text-align: center;
+    }
+    .stat-number { font-size: 1.6rem !important; }
+    .stat-label { font-size: 0.7rem !important; }
+}
+
+/* 5. Fix timeline on mobile - date and content were overflowing */
+@media (max-width: 768px) {
+    .timeline-item {
+        flex-direction: column !important;
+        gap: 0.5rem;
+    }
+    .timeline-date {
+        flex-direction: row !important;
+        gap: 0.8rem;
+        align-items: center;
+    }
+    .tech-tags {
+        flex-wrap: wrap !important;
+        gap: 0.4rem !important;
+    }
+    .tag {
+        font-size: 0.72rem !important;
+        padding: 3px 8px !important;
+    }
+}
+
+/* 6. Fix touch targets - buttons too small on mobile */
+@media (max-width: 768px) {
+    .cta-primary, .cta-secondary {
+        padding: 0.9rem 1.5rem !important;
+        font-size: 1rem !important;
+        min-height: 48px;
+    }
+    .nav-menu a {
+        padding: 0.6rem 0 !important;
+        font-size: 1rem !important;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* 7. Fix films page embed on mobile */
+@media (max-width: 768px) {
+    .film-embed { margin-bottom: 1rem; }
+    .films-stats-row {
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+    .film-stat { min-width: 80px; }
+    .laurels-grid { flex-direction: column; }
+    .film-showcase-card { padding: 1rem !important; }
+}
+
+/* 8. Fix about page creative grid on mobile */
+@media (max-width: 600px) {
+    div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* 9. Respect system reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .solar-system, .wormhole, .blackhole-system,
+    .nebula, .cosmic-dust, .comet, .particle,
+    .planet, .sun, .asteroid-belt {
+        animation: none !important;
+        display: none !important;
+    }
+    .star { animation: none !important; }
 }
