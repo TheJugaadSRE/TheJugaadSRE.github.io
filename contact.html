@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -87,9 +87,9 @@
                             <li><i class="fas fa-rocket" style="color:#ff8c00;margin-right:0.4rem;"></i> <strong>DevRel Leadership</strong> - Building developer communities and technical evangelism</li>
                             <li><i class="fas fa-bolt" style="color:#ff8c00;margin-right:0.4rem;"></i> <strong>Site Reliability Engineering</strong> - Scaling systems and improving observability</li>
                             <li><i class="fas fa-robot" style="color:#ff8c00;margin-right:0.4rem;"></i> <strong>AI in Operations</strong> - Leveraging GenAI for automation and efficiency</li>
-                            <li>ðŸ“ <strong>Content Collaboration</strong> - Technical writing and speaking opportunities</li>
+                            <li>ðŸ" <strong>Content Collaboration</strong> - Technical writing and speaking opportunities</li>
                             <li><i class="fas fa-film" style="color:#ff8c00;margin-right:0.4rem;"></i> <strong>Creative Projects</strong> - Filmmaking and storytelling initiatives</li>
-                            <li>ðŸŒ <strong>Global Perspectives</strong> - Cross-cultural technology insights</li>
+                            <li>ðŸŒ <strong>Global Perspectives</strong> - Cross-cultural technology insights</li>
                         </ul>
                     </div>
                     
@@ -111,17 +111,20 @@
                     <p>Connect with me across various platforms for different types of content and engagement:</p>
                     
                     <div class="social-platforms">
-                        <a href="mailto:blinkinbox1@gmail.com?subject=Hello%20Shobhit%20-%20Let's%20Connect&body=Hi%20Shobhit,%0A%0AI%20came%20across%20your%20website%20and%20would%20love%20to%20connect.%0A%0A[Please%20share%20your%20message%20here]%0A%0ABest%20regards," class="social-platform gmail" title="Send email to Shobhit">
+
+                        <!-- CHANGED: email hidden visually, mailto opens compose with vershobhit2@gmail.com in To -->
+                        <a href="mailto:vershobhit2@gmail.com?subject=Hello%20Shobhit%20-%20Let's%20Connect&body=Hi%20Shobhit,%0A%0AI%20came%20across%20your%20website%20and%20would%20love%20to%20connect.%0A%0A[Please%20share%20your%20message%20here]%0A%0ABest%20regards," class="social-platform gmail" title="Send email to Shobhit">
                             <div class="platform-icon">
                                 <i class="fas fa-envelope"></i>
                             </div>
                             <div class="platform-info">
                                 <h4>Gmail</h4>
                                 <p>Direct email for professional inquiries and collaboration opportunities</p>
-                                <span class="platform-handle">blinkinbox1@gmail.com</span>
+                                <span class="platform-handle">Send me an email</span>
                             </div>
                         </a>
                         
+                        <!-- CHANGED: LinkedIn handle to vershobhit only -->
                         <a href="https://www.linkedin.com/in/vershobhit" target="_blank" class="social-platform linkedin">
                             <div class="platform-icon">
                                 <i class="fab fa-linkedin"></i>
@@ -129,10 +132,11 @@
                             <div class="platform-info">
                                 <h4>LinkedIn</h4>
                                 <p>Professional updates, career insights, and industry discussions</p>
-                                <span class="platform-handle">@shobhitverma</span>
+                                <span class="platform-handle">vershobhit</span>
                             </div>
                         </a>
                         
+                        <!-- CHANGED: follower count dynamic via JS, seed value 41.3K -->
                         <a href="https://instagram.com/thejugaadguy" target="_blank" class="social-platform instagram">
                             <div class="platform-icon">
                                 <i class="fab fa-instagram"></i>
@@ -140,7 +144,7 @@
                             <div class="platform-info">
                                 <h4>Instagram</h4>
                                 <p>Tech tips, financial insights, and authentic life moments</p>
-                                <span class="platform-handle">@thejugaadguy &bull; 42.3K followers</span>
+                                <span class="platform-handle">@thejugaadguy &bull; <span id="ig-followers">41.3K</span> followers</span>
                             </div>
                         </a>
                         
@@ -274,5 +278,17 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Instagram follower count — Instagram blocks unauthenticated API calls from browsers,
+        // so true real-time fetching isn't possible without a backend proxy.
+        // Update the number below manually whenever your count changes.
+        // Format: use "41.3K", "42K", "50.1K" etc.
+        // TO UPDATE: change the value in igFollowers below and push.
+        (function() {
+            var igFollowers = "41.3K"; // <-- UPDATE THIS when count changes
+            var el = document.getElementById('ig-followers');
+            if (el) el.textContent = igFollowers;
+        })();
+    </script>
 </body>
 </html>
