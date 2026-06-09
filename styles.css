@@ -6045,6 +6045,11 @@ body.theme-energetic .blackhole-background {
    Desktop untouched. Mobile only.
    ============================================ */
 
+/* ============================================
+   MOBILE FIXES - Added June 2026
+   Desktop untouched. Mobile only.
+   ============================================ */
+
 /* 1. Hide solar system on mobile - it's the biggest perf killer */
 @media (max-width: 768px) {
     .solar-system { display: none !important; }
@@ -6052,7 +6057,15 @@ body.theme-energetic .blackhole-background {
     /* 2. Reduce cosmic scene opacity so text stays readable */
     .cosmic-scene { opacity: 0.25 !important; }
 
-    /* 3. Fix navbar - hamburger was defined but hamburger display wasn't set on desktop */
+    /* 3. CRITICAL: Hero height fix — 100vh locks the page on mobile,
+       nothing below hero is scrollable. Change to min-height. */
+    .hero {
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow: visible !important;
+    }
+
+    /* 4. Fix navbar - hamburger was defined but hamburger display wasn't set on desktop */
     .hamburger { display: none; }
 }
 @media (max-width: 768px) {

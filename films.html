@@ -7,145 +7,110 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Film card styles — strong overrides to beat any light theme from styles.css */
         .film-showcase-card {
             background: #0d0d0d !important;
             border: 1px solid rgba(255,140,0,0.4) !important;
             border-radius: 16px !important;
             padding: 2rem !important;
-            margin-bottom: 2rem !important;
             color: #ffffff !important;
         }
-        .film-showcase-card * {
-            color: inherit;
+        .film-showcase-card * { color: inherit; }
+        /* SIDE BY SIDE layout on desktop */
+        .films-two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 900px) {
+            .films-two-col { grid-template-columns: 1fr; }
         }
         .film-title-row {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.6rem;
             margin-bottom: 0.5rem;
             flex-wrap: wrap;
         }
-        .film-title-row h3 {
-            color: #ff8c00 !important;
-            font-size: 1.6rem;
-            margin: 0;
-        }
+        .film-title-row h3 { color: #ff8c00 !important; font-size: 1.4rem; margin: 0; }
         .film-genre-badge {
             background: rgba(255,140,0,0.2) !important;
             border: 1px solid rgba(255,140,0,0.5) !important;
             color: #ff8c00 !important;
-            padding: 3px 12px;
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.78rem;
+            font-size: 0.72rem;
             font-weight: 600;
-            letter-spacing: 0.5px;
             text-transform: uppercase;
         }
-        .film-meta {
-            color: rgba(255,255,255,0.55) !important;
-            font-size: 0.85rem;
-            margin-bottom: 1.2rem;
-        }
-        .film-description {
-            color: rgba(255,255,255,0.85) !important;
-            margin-bottom: 1.5rem;
-            line-height: 1.7;
-        }
-        /* YouTube embed */
+        .film-meta { color: rgba(255,255,255,0.55) !important; font-size: 0.82rem; margin-bottom: 0.8rem; }
+        .film-description { color: rgba(255,255,255,0.85) !important; margin-bottom: 1rem; font-size: 0.9rem; line-height: 1.6; }
         .film-embed {
             position: relative;
             padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
             border: 1px solid rgba(255,140,0,0.2);
         }
         .film-embed iframe {
-            position: absolute;
-            top: 0; left: 0;
+            position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
-            border: none;
-            border-radius: 12px;
-        }
-        /* Laurel badges */
-        .laurels-section {
-            margin-top: 1.2rem;
-        }
-        .laurels-title {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.82rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.8rem;
-        }
-        .laurels-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.6rem;
-        }
-        .laurel-badge {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            background: rgba(0,0,0,0.35);
-            border: 1px solid rgba(255,215,0,0.3);
-            border-radius: 8px;
-            padding: 6px 12px;
-            font-size: 0.78rem;
-            color: rgba(255,255,255,0.85);
-        }
-        .laurel-badge .laurel-icon {
-            color: gold;
-            font-size: 0.85rem;
-        }
-        .laurel-badge.semi-finalist {
-            border-color: rgba(192,192,192,0.35);
-        }
-        .laurel-badge.semi-finalist .laurel-icon {
-            color: silver;
+            border: none; border-radius: 10px;
         }
         .watch-btn {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             background: #ff0000;
-            color: #fff;
-            padding: 0.6rem 1.4rem;
+            color: #fff !important;
+            padding: 0.5rem 1.2rem;
             border-radius: 8px;
-            text-decoration: none;
             font-weight: 600;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
         }
-        .watch-btn:hover { background: #cc0000; color: #fff; }
+        .watch-btn:hover { background: #cc0000; }
+        .laurels-title {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.6rem;
+        }
+        /* Laurel images grid */
+        .laurels-img-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            align-items: center;
+        }
+        .laurels-img-grid img {
+            height: 90px;
+            width: auto;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
         .films-stats-row {
             display: flex;
             gap: 2rem;
-            margin: 2rem 0;
+            margin: 1.5rem 0;
             flex-wrap: wrap;
+            justify-content: center;
         }
-        .film-stat {
-            text-align: center;
-        }
-        .film-stat .num {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #ff8c00;
-            display: block;
-        }
-        .film-stat .lbl {
-            font-size: 0.82rem;
-            color: rgba(255,255,255,0.55);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .film-stat { text-align: center; }
+        .film-stat .num { font-size: 2rem; font-weight: 700; color: #ff8c00; display: block; }
+        .film-stat .lbl { font-size: 0.78rem; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.5px; }
+        /* Hamburger nav fix */
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+        .hamburger span { width: 25px; height: 2px; background: #fff; display: block; border-radius: 2px; }
+        @media (max-width: 768px) {
+            .hamburger { display: flex !important; }
         }
     </style>
 </head>
 <body>
-    <!-- Epic Cosmic Background -->
     <div class="cosmic-scene">
         <div class="deep-space"></div>
         <div class="star-field">
@@ -170,11 +135,10 @@
         </div>
     </div>
 
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo"><h2>Shobhit Verma</h2></div>
-            <ul class="nav-menu">
+            <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="skills.html">Skills</a></li>
@@ -184,10 +148,12 @@
                 <li><a href="travel.html">Travel</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
 
-    <!-- Films Content -->
     <main class="page-content">
         <div class="container">
             <div class="page-header">
@@ -195,84 +161,72 @@
                 <p>Short film writer &amp; director — recognized at international film festivals across India and globally</p>
             </div>
 
-            <!-- Stats row -->
             <div class="films-stats-row">
                 <div class="film-stat"><span class="num">2</span><span class="lbl">Films Directed</span></div>
                 <div class="film-stat"><span class="num">6</span><span class="lbl">Festival Recognitions</span></div>
                 <div class="film-stat"><span class="num">3+</span><span class="lbl">Genres Explored</span></div>
             </div>
 
-            <div class="films-content">
-                <div class="about-text" style="width:100%;">
+            <!-- TWO FILMS SIDE BY SIDE -->
+            <div class="films-two-col">
 
-                    <!-- FILM 1: hIM -->
-                    <div class="film-showcase-card">
-                        <div class="film-title-row">
-                            <h3>hIM</h3>
-                            <span class="film-genre-badge">Hindi Thriller</span>
-                            <span class="film-genre-badge" style="background:rgba(255,215,0,0.15);border-color:rgba(255,215,0,0.4);color:gold;">4 Festival Wins</span>
-                        </div>
-                        <div class="film-meta">Writer &amp; Director &nbsp;|&nbsp; Short Film &nbsp;|&nbsp; 2020</div>
-                        <p class="film-description">A Hindi thriller short film that earned selection and semi-finalist recognition across four international film festivals. The film explores human psychology through tight, visual storytelling — bringing together performance, suspense, and a minimalist narrative structure.</p>
-
-                        <!-- YouTube embed -->
-                        <div class="film-embed">
-                            <iframe src="https://www.youtube.com/embed/YnEsxTtC01I" title="hIM - Hindi Thriller Short Film" allowfullscreen loading="lazy"></iframe>
-                        </div>
-
-                        <a href="https://www.youtube.com/watch?v=YnEsxTtC01I" target="_blank" rel="noopener" class="watch-btn">
-                            <i class="fab fa-youtube"></i> Watch on YouTube
-                        </a>
-
-                        <!-- Festival Laurels - real images -->
-                        <div class="laurels-section">
-                            <div class="laurels-title"><i class="fas fa-award" style="color:gold;margin-right:0.4rem;"></i> Festival Recognition</div>
-                            <div class="laurels-grid" style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-top:0.8rem;">
-                                <img src="images/laurel-south-asian.png" alt="Official Selection - South Asian Short Film Festival 2020-21" style="height:120px;width:auto;border-radius:8px;">
-                                <img src="images/laurel-darbhanga.png" alt="Official Selection - Darbhanga International Film Festival" style="height:120px;width:auto;border-radius:8px;">
-                                <img src="images/laurel-durgapur.png" alt="Official Selection - Durgapur International Film Festival 2020" style="height:120px;width:auto;border-radius:8px;">
-                                <img src="images/laurel-amber.png" alt="Semi Finalist - Amber International Film Festival 2021" style="height:120px;width:auto;border-radius:8px;">
-                            </div>
+                <!-- FILM 1: hIM -->
+                <div class="film-showcase-card">
+                    <div class="film-title-row">
+                        <h3>hIM</h3>
+                        <span class="film-genre-badge">Hindi Thriller</span>
+                        <span class="film-genre-badge" style="background:rgba(255,215,0,0.15);border-color:rgba(255,215,0,0.4);color:gold;">4 Festival Wins</span>
+                    </div>
+                    <div class="film-meta">Writer &amp; Director &nbsp;|&nbsp; Short Film &nbsp;|&nbsp; 2020</div>
+                    <p class="film-description">A Hindi thriller exploring human psychology through tight visual storytelling — suspense, performance, and a minimalist narrative structure that earned recognition across four international festivals.</p>
+                    <div class="film-embed">
+                        <iframe src="https://www.youtube.com/embed/YnEsxTtC01I" title="hIM - Hindi Thriller Short Film" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=YnEsxTtC01I" target="_blank" rel="noopener" class="watch-btn">
+                        <i class="fab fa-youtube"></i> Watch on YouTube
+                    </a>
+                    <div>
+                        <div class="laurels-title"><i class="fas fa-award" style="color:gold;margin-right:0.4rem;"></i> Festival Recognition</div>
+                        <div class="laurels-img-grid">
+                            <img src="images/laurel-south-asian.png.png" alt="South Asian Short Film Festival 2020-21">
+                            <img src="images/laurel-darbhanga.png.png" alt="Darbhanga International Film Festival">
+                            <img src="images/laurel-durgapur.png.png" alt="Durgapur International Film Festival 2020">
+                            <img src="images/laurel-amber.png.png" alt="Semi Finalist - Amber International Film Festival 2021">
                         </div>
                     </div>
-
-                    <!-- FILM 2: Makke Ki Roti -->
-                    <div class="film-showcase-card">
-                        <div class="film-title-row">
-                            <h3>Makke Ki Roti</h3>
-                            <span class="film-genre-badge">Drama</span>
-                            <span class="film-genre-badge" style="background:rgba(255,215,0,0.15);border-color:rgba(255,215,0,0.4);color:gold;">2 Festival Wins</span>
-                        </div>
-                        <div class="film-meta">Writer &amp; Director &nbsp;|&nbsp; Short Film &nbsp;|&nbsp; 2017</div>
-                        <p class="film-description">A touching short film about the relationship between a mother and son, told through the simple yet profound act of making Makke Ki Roti. Selected and recognized at international film festivals for its emotional authenticity and human storytelling.</p>
-
-                        <!-- YouTube embed -->
-                        <div class="film-embed">
-                            <iframe src="https://www.youtube.com/embed/8XHlPv_4nP0" title="Makke Ki Roti - Short Film" allowfullscreen loading="lazy"></iframe>
-                        </div>
-
-                        <a href="https://www.youtube.com/watch?v=8XHlPv_4nP0" target="_blank" rel="noopener" class="watch-btn">
-                            <i class="fab fa-youtube"></i> Watch on YouTube
-                        </a>
-
-                        <!-- Festival Laurels - real images -->
-                        <div class="laurels-section">
-                            <div class="laurels-title"><i class="fas fa-award" style="color:gold;margin-right:0.4rem;"></i> Festival Recognition</div>
-                            <div class="laurels-grid" style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-top:0.8rem;">
-                                <img src="images/laurel-acharya-tulsi.png" alt="Official Selection - Acharya Tulsi Short Film Festival 2017-18" style="height:120px;width:auto;border-radius:8px;">
-                                <img src="images/laurel-screen-short.png" alt="Official Selection - Screen Short Fest 2017-18" style="height:120px;width:auto;border-radius:8px;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Creative Philosophy -->
-                    <div class="creative-philosophy" style="margin-top:1rem;">
-                        <h4><i class="fas fa-palette" style="color:#ff8c00;margin-right:0.5rem;"></i> Why Filmmaking Matters for DevRel</h4>
-                        <p>Great developer advocacy is fundamentally about storytelling — making the complex feel human, the technical feel approachable, and the abstract feel real. The same instincts that go into writing a film script — clarity of message, emotional arc, respect for your audience's time — are exactly what makes technical content land.</p>
-                        <p>Filmmaking taught me to <strong>show, not tell</strong>. That principle shapes every demo, every talk, and every piece of content I create.</p>
-                    </div>
-
                 </div>
+
+                <!-- FILM 2: Makke Ki Roti -->
+                <div class="film-showcase-card">
+                    <div class="film-title-row">
+                        <h3>Makke Ki Roti</h3>
+                        <span class="film-genre-badge">Drama</span>
+                        <span class="film-genre-badge" style="background:rgba(255,215,0,0.15);border-color:rgba(255,215,0,0.4);color:gold;">2 Festival Wins</span>
+                    </div>
+                    <div class="film-meta">Writer &amp; Director &nbsp;|&nbsp; Short Film &nbsp;|&nbsp; 2017</div>
+                    <p class="film-description">A touching story about a mother and son, told through the simple yet profound act of making Makke Ki Roti. Recognized for its emotional authenticity and human storytelling at international festivals.</p>
+                    <div class="film-embed">
+                        <iframe src="https://www.youtube.com/embed/8XHlPv_4nP0" title="Makke Ki Roti - Short Film" allowfullscreen loading="lazy"></iframe>
+                    </div>
+                    <a href="https://www.youtube.com/watch?v=8XHlPv_4nP0" target="_blank" rel="noopener" class="watch-btn">
+                        <i class="fab fa-youtube"></i> Watch on YouTube
+                    </a>
+                    <div>
+                        <div class="laurels-title"><i class="fas fa-award" style="color:gold;margin-right:0.4rem;"></i> Festival Recognition</div>
+                        <div class="laurels-img-grid">
+                            <img src="images/laurel-acharya-tulsi.png.png" alt="Acharya Tulsi Short Film Festival 2017-18">
+                            <img src="images/laurel-screen-short.png.png" alt="Screen Short Fest 2017-18">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Creative Philosophy -->
+            <div class="creative-philosophy" style="background:#0d0d0d;border:1px solid rgba(255,140,0,0.3);border-radius:16px;padding:2rem;margin-bottom:2rem;">
+                <h4><i class="fas fa-palette" style="color:#ff8c00;margin-right:0.5rem;"></i> Why Filmmaking Matters for DevRel</h4>
+                <p style="color:rgba(255,255,255,0.85);margin-top:0.8rem;">Great developer advocacy is fundamentally about storytelling — making the complex feel human, the technical feel approachable, and the abstract feel real. The same instincts that go into writing a film script — clarity of message, emotional arc, respect for your audience's time — are exactly what makes technical content land.</p>
+                <p style="color:rgba(255,255,255,0.85);margin-top:0.6rem;">Filmmaking taught me to <strong>show, not tell</strong>. That principle shapes every demo, every talk, and every piece of content I create.</p>
             </div>
 
             <!-- Creative Impact -->
@@ -295,12 +249,12 @@
                     <div class="impact-item">
                         <div class="impact-icon"><i class="fas fa-users" style="color:#ff8c00;font-size:2rem;"></i></div>
                         <h4>Team Collaboration</h4>
-                        <p>Managing film productions strengthened my project management and team coordination skills — valuable assets when leading technical communities and cross-functional initiatives.</p>
+                        <p>Managing film productions strengthened my project management and team coordination skills — valuable when leading technical communities and cross-functional initiatives.</p>
                     </div>
                     <div class="impact-item">
                         <div class="impact-icon"><i class="fas fa-sync-alt" style="color:#ff8c00;font-size:2rem;"></i></div>
                         <h4>Iterative Excellence</h4>
-                        <p>The iterative nature of filmmaking — from script to screen — mirrors the continuous improvement mindset essential in DevOps, SRE, and content creation.</p>
+                        <p>The iterative nature of filmmaking — script to screen — mirrors the continuous improvement mindset essential in DevOps, SRE, and content creation.</p>
                     </div>
                 </div>
             </div>
@@ -308,7 +262,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <p>&copy; 2026 Shobhit Verma - TheJugaadSRE. All rights reserved.</p>
@@ -316,5 +269,23 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Hamburger nav toggle — fallback in case script.js doesn't handle it
+        (function() {
+            var btn = document.getElementById('hamburger');
+            var menu = document.getElementById('navMenu');
+            if (btn && menu) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menu.classList.toggle('active');
+                });
+                document.addEventListener('click', function(e) {
+                    if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                        menu.classList.remove('active');
+                    }
+                });
+            }
+        })();
+    </script>
 </body>
 </html>

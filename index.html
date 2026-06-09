@@ -265,5 +265,23 @@
 
     <script src="script.js"></script>
     <script src="cosmic-audio.js"></script>
+    <script>
+        // Hamburger nav fix
+        (function() {
+            var btn = document.getElementById('hamburger') || document.querySelector('.hamburger');
+            var menu = document.getElementById('navMenu') || document.querySelector('.nav-menu');
+            if (btn && menu) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menu.classList.toggle('active');
+                });
+                document.addEventListener('click', function(e) {
+                    if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                        menu.classList.remove('active');
+                    }
+                });
+            }
+        })();
+    </script>
 </body>
 </html>
