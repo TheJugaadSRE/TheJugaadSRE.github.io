@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,52 +6,174 @@
     <title>Films - Shobhit Verma | SRE Manager & Content Creator</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Film card styles — strong overrides to beat any light theme from styles.css */
+        .film-showcase-card {
+            background: #0d0d0d !important;
+            border: 1px solid rgba(255,140,0,0.4) !important;
+            border-radius: 16px !important;
+            padding: 2rem !important;
+            margin-bottom: 2rem !important;
+            color: #ffffff !important;
+        }
+        .film-showcase-card * {
+            color: inherit;
+        }
+        .film-title-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .film-title-row h3 {
+            color: #ff8c00 !important;
+            font-size: 1.6rem;
+            margin: 0;
+        }
+        .film-genre-badge {
+            background: rgba(255,140,0,0.2) !important;
+            border: 1px solid rgba(255,140,0,0.5) !important;
+            color: #ff8c00 !important;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .film-meta {
+            color: rgba(255,255,255,0.55) !important;
+            font-size: 0.85rem;
+            margin-bottom: 1.2rem;
+        }
+        .film-description {
+            color: rgba(255,255,255,0.85) !important;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        /* YouTube embed */
+        .film-embed {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,140,0,0.2);
+        }
+        .film-embed iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: none;
+            border-radius: 12px;
+        }
+        /* Laurel badges */
+        .laurels-section {
+            margin-top: 1.2rem;
+        }
+        .laurels-title {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+        }
+        .laurels-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+        .laurel-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.85);
+        }
+        .laurel-badge .laurel-icon {
+            color: gold;
+            font-size: 0.85rem;
+        }
+        .laurel-badge.semi-finalist {
+            border-color: rgba(192,192,192,0.35);
+        }
+        .laurel-badge.semi-finalist .laurel-icon {
+            color: silver;
+        }
+        .watch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #ff0000;
+            color: #fff;
+            padding: 0.6rem 1.4rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            margin-top: 0.5rem;
+        }
+        .watch-btn:hover { background: #cc0000; color: #fff; }
+        .films-stats-row {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        .film-stat {
+            text-align: center;
+        }
+        .film-stat .num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff8c00;
+            display: block;
+        }
+        .film-stat .lbl {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.55);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
 </head>
 <body>
     <!-- Epic Cosmic Background -->
     <div class="cosmic-scene">
         <div class="deep-space"></div>
         <div class="star-field">
-            <div class="star"></div>
-            <div class="star"></div>
-            <div class="star"></div>
-            <div class="star"></div>
-            <div class="star"></div>
-            <div class="star"></div>
-            <div class="star"></div>
-            <div class="star"></div>
-            <div class="star"></div>
+            <div class="star"></div><div class="star"></div><div class="star"></div>
+            <div class="star"></div><div class="star"></div><div class="star"></div>
+            <div class="star"></div><div class="star"></div><div class="star"></div>
             <div class="star"></div>
         </div>
         <div class="wormhole">
-            <div class="wormhole-entrance"></div>
-            <div class="wormhole-tunnel"></div>
-            <div class="wormhole-exit"></div>
-            <div class="wormhole-energy"></div>
+            <div class="wormhole-entrance"></div><div class="wormhole-tunnel"></div>
+            <div class="wormhole-exit"></div><div class="wormhole-energy"></div>
             <div class="wormhole-donut"></div>
         </div>
         <div class="blackhole-system">
-            <div class="gravitational-lensing"></div>
-            <div class="accretion-disk"></div>
-            <div class="blackhole-center"></div>
-            <div class="event-horizon"></div>
+            <div class="gravitational-lensing"></div><div class="accretion-disk"></div>
+            <div class="blackhole-center"></div><div class="event-horizon"></div>
             <div class="hawking-radiation"></div>
         </div>
         <div class="space-particles">
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
+            <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+            <div class="particle"></div><div class="particle"></div>
         </div>
     </div>
 
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <h2>Shobhit Verma</h2>
-            </div>
+            <div class="nav-logo"><h2>Shobhit Verma</h2></div>
             <ul class="nav-menu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
@@ -70,235 +192,104 @@
         <div class="container">
             <div class="page-header">
                 <h1><i class="fas fa-film" style="color:#ff8c00;margin-right:0.5rem;"></i> Filmmaking &amp; Creative Expression</h1>
-                <p>Award-winning filmmaker with a passion for storytelling and visual creativity</p>
+                <p>Short film writer &amp; director — recognized at international film festivals across India and globally</p>
+            </div>
+
+            <!-- Stats row -->
+            <div class="films-stats-row">
+                <div class="film-stat"><span class="num">2</span><span class="lbl">Films Directed</span></div>
+                <div class="film-stat"><span class="num">6</span><span class="lbl">Festival Recognitions</span></div>
+                <div class="film-stat"><span class="num">3+</span><span class="lbl">Genres Explored</span></div>
             </div>
 
             <div class="films-content">
-                <div class="films-text">
-                    <h3><i class="fas fa-trophy" style="color:#ff8c00;margin-right:0.5rem;"></i> Creative Journey</h3>
-                    <p>Beyond the world of technology and engineering, I find deep fulfillment in the art of filmmaking. This creative pursuit allows me to explore storytelling, visual composition, and the technical aspects of video production.</p>
-                    
-                    <p>My approach to filmmaking mirrors my technical philosophy - attention to detail, systematic planning, and continuous learning. Whether it's capturing authentic moments or crafting compelling narratives, I bring the same dedication that drives my professional work.</p>
-                    
-                    <div class="achievements">
-                        <div class="achievement">
-                            <i class="fas fa-trophy"></i>
-                            <span>Award-winning filmmaker with recognition for creative excellence</span>
-                        </div>
-                        <div class="achievement">
-                            <i class="fas fa-video"></i>
-                            <span>Expertise in video production, editing, and post-production workflows</span>
-                        </div>
-                        <div class="achievement">
-                            <i class="fas fa-eye"></i>
-                            <span>Strong visual storytelling and cinematography skills</span>
-                        </div>
-                        <div class="achievement">
-                            <i class="fas fa-lightbulb"></i>
-                            <span>Creative problem-solving and innovative narrative techniques</span>
-                        </div>
-                        <div class="achievement">
-                            <i class="fas fa-users"></i>
-                            <span>Collaborative approach to creative projects and team leadership</span>
-                        </div>
-                    </div>
-                    
-                    <div class="creative-philosophy">
-                        <h4><i class="fas fa-palette" style="color:#ff8c00;margin-right:0.5rem;"></i> Creative Philosophy</h4>
-                        <p>I believe that great films, like great software systems, are built on solid foundations: clear vision, meticulous planning, and flawless execution. My technical background enhances my filmmaking by bringing systematic approaches to creative challenges.</p>
-                        
-                        <p>The intersection of technology and creativity fascinates me - from understanding camera sensors and digital workflows to leveraging AI tools for post-production efficiency. This unique perspective allows me to bridge technical precision with artistic expression.</p>
-                    </div>
-                </div>
-                
-                <div class="films-visual">
-                    <div class="film-showcase">
-                        <div class="showcase-header">
-                            <h4><i class="fas fa-video" style="color:#ff8c00;margin-right:0.5rem;"></i> Film Portfolio</h4>
-                            <p>A collection of creative works spanning various genres and styles</p>
-                        </div>
-                        
-                        <div class="films-gallery">
-                            <div class="film-item">
-                                <div class="film-placeholder">
-                                    <i class="fas fa-film"></i>
-                                    <span>Award-Winning Short Film</span>
-                                </div>
-                            </div>
-                            <div class="film-item">
-                                <div class="film-placeholder">
-                                    <i class="fas fa-camera"></i>
-                                    <span>Documentary Project</span>
-                                </div>
-                            </div>
-                            <div class="film-item">
-                                <div class="film-placeholder">
-                                    <i class="fas fa-video"></i>
-                                    <span>Creative Narrative</span>
-                                </div>
-                            </div>
-                            <div class="film-item">
-                                <div class="film-placeholder">
-                                    <i class="fas fa-play-circle"></i>
-                                    <span>Experimental Work</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="technical-skills">
-                            <h5><i class="fas fa-tools" style="color:#ff8c00;margin-right:0.5rem;"></i> Technical Expertise</h5>
-                            <div class="tech-skills-grid">
-                                <div class="tech-skill">
-                                    <i class="fas fa-video"></i>
-                                    <span>Video Production</span>
-                                </div>
-                                <div class="tech-skill">
-                                    <i class="fas fa-cut"></i>
-                                    <span>Post-Production</span>
-                                </div>
-                                <div class="tech-skill">
-                                    <i class="fas fa-palette"></i>
-                                    <span>Color Grading</span>
-                                </div>
-                                <div class="tech-skill">
-                                    <i class="fas fa-volume-up"></i>
-                                    <span>Sound Design</span>
-                                </div>
-                                <div class="tech-skill">
-                                    <i class="fas fa-camera-retro"></i>
-                                    <span>Cinematography</span>
-                                </div>
-                                <div class="tech-skill">
-                                    <i class="fas fa-magic"></i>
-                                    <span>Visual Effects</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Retro Birthday Ad Button -->
-            <div class="retro-ad-button" id="retroAdButton">
-                <div class="ad-content">
-                    <div class="ad-text">You share your BDay with</div>
-                    <div class="ad-subtext">Click to find out!</div>
-                </div>
-                <div class="ad-sparkles"><i class="fas fa-star"></i></div>
-            </div>
+                <div class="about-text" style="width:100%;">
 
-            <!-- Birthday Buddies Section -->
-            <div class="birthday-buddies" id="birthdayBuddies" style="display: none;">
-                <div class="birthday-header">
-                    <h3><i class="fas fa-birthday-cake" style="color:#ff8c00;margin-right:0.5rem;"></i> You share your Bday with</h3>
-                    <div class="close-button" id="closeBirthday">Ã—</div>
-                </div>
-                
-                <div class="birthday-content" id="birthdayContent" style="display: none;">
-                    <div class="birthday-intro">
-                        <p>Discover the amazing celebrities, politicians, and sports stars who share your special day!</p>
-                        <p class="birthday-note"><i class="fas fa-birthday-cake" style="color:#ff8c00;"></i> <strong>Your Birthday:</strong> [Your Birthday Date] <i class="fas fa-birthday-cake" style="color:#ff8c00;"></i></p>
-                    </div>
-                    
-                    <div class="birthday-categories">
-                        <div class="birthday-category">
-                            <div class="category-header">
-                                <i class="fas fa-film"></i>
-                                <h4>Bollywood & Cinema</h4>
-                            </div>
-                            <div class="celebrity-list">
-                                <div class="celebrity-item">
-                                    <div class="celebrity-avatar"><i class="fas fa-star" style="font-size:2rem;color:#ff8c00;"></i></div>
-                                    <div class="celebrity-info">
-                                        <span class="celebrity-name">Shah Rukh Khan</span>
-                                        <span class="celebrity-detail">King of Bollywood</span>
-                                    </div>
-                                </div>
-                                <div class="celebrity-item">
-                                    <div class="celebrity-avatar"><i class="fas fa-star" style="font-size:2rem;color:#ff8c00;"></i></div>
-                                    <div class="celebrity-info">
-                                        <span class="celebrity-name">Priyanka Chopra</span>
-                                        <span class="celebrity-detail">Global Icon & Actress</span>
-                                    </div>
-                                </div>
-                                <div class="celebrity-item">
-                                    <div class="celebrity-avatar"><i class="fas fa-star" style="font-size:2rem;color:#ff8c00;"></i></div>
-                                    <div class="celebrity-info">
-                                        <span class="celebrity-name">Rajinikanth</span>
-                                        <span class="celebrity-detail">Superstar of South Cinema</span>
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- FILM 1: hIM -->
+                    <div class="film-showcase-card">
+                        <div class="film-title-row">
+                            <h3>hIM</h3>
+                            <span class="film-genre-badge">Hindi Thriller</span>
+                            <span class="film-genre-badge" style="background:rgba(255,215,0,0.15);border-color:rgba(255,215,0,0.4);color:gold;">4 Festival Wins</span>
                         </div>
-                        
-                        <div class="birthday-category">
-                            <div class="category-header">
-                                <i class="fas fa-landmark"></i>
-                                <h4>Politicians & Leaders</h4>
-                            </div>
-                            <div class="celebrity-list">
-                                <div class="celebrity-item">
-                                    <div class="celebrity-avatar"><i class="fas fa-star" style="font-size:2rem;color:#ff8c00;"></i></div>
-                                    <div class="celebrity-info">
-                                        <span class="celebrity-name">Barack Obama</span>
-                                        <span class="celebrity-detail">Former US President</span>
-                                    </div>
-                                </div>
-                                <div class="celebrity-item">
-                                    <div class="celebrity-avatar"><i class="fas fa-star" style="font-size:2rem;color:#ff8c00;"></i></div>
-                                    <div class="celebrity-info">
-                                        <span class="celebrity-name">Narendra Modi</span>
-                                        <span class="celebrity-detail">Prime Minister of India</span>
-                                    </div>
-                                </div>
-                                <div class="celebrity-item">
-                                    <div class="celebrity-avatar"><i class="fas fa-star" style="font-size:2rem;color:#ff8c00;"></i></div>
-                                    <div class="celebrity-info">
-                                        <span class="celebrity-name">Nelson Mandela</span>
-                                        <span class="celebrity-detail">Icon of Freedom</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="film-meta">Writer &amp; Director &nbsp;|&nbsp; Short Film &nbsp;|&nbsp; 2020</div>
+                        <p class="film-description">A Hindi thriller short film that earned selection and semi-finalist recognition across four international film festivals. The film explores human psychology through tight, visual storytelling — bringing together performance, suspense, and a minimalist narrative structure.</p>
+
+                        <!-- YouTube embed -->
+                        <div class="film-embed">
+                            <iframe src="https://www.youtube.com/embed/YnEsxTtC01I" title="hIM - Hindi Thriller Short Film" allowfullscreen loading="lazy"></iframe>
                         </div>
-                        
-                        <div class="birthday-category">
-                            <div class="category-header">
-                                <i class="fas fa-trophy"></i>
-                                <h4>Sports Legends</h4>
-                            </div>
-                            <div class="celebrity-list">
-                                <div class="celebrity-item">
-                                    <div class="celebrity-avatar"><i class="fas fa-star" style="font-size:2rem;color:#ff8c00;"></i></div>
-                                    <div class="celebrity-info">
-                                        <span class="celebrity-name">Virat Kohli</span>
-                                        <span class="celebrity-detail">Cricket Superstar</span>
-                                    </div>
-                                </div>
-                                <div class="celebrity-item">
-                                    <div class="celebrity-avatar"><i class="fas fa-star" style="font-size:2rem;color:#ff8c00;"></i></div>
-                                    <div class="celebrity-info">
-                                        <span class="celebrity-name">Lionel Messi</span>
-                                        <span class="celebrity-detail">Football Legend</span>
-                                    </div>
-                                </div>
-                                <div class="celebrity-item">
-                                    <div class="celebrity-avatar"><i class="fas fa-star" style="font-size:2rem;color:#ff8c00;"></i></div>
-                                    <div class="celebrity-info">
-                                        <span class="celebrity-name">Michael Jordan</span>
-                                        <span class="celebrity-detail">Basketball GOAT</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="birthday-footer">
-                        <p><i class="fas fa-star" style="color:#ff8c00;"></i> <em>Amazing how many incredible people share your special day!</em> <i class="fas fa-star" style="color:#ff8c00;"></i></p>
-                        <a href="https://www.birthdaybuddies.net" target="_blank" class="birthday-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            Discover More Birthday Buddies
+
+                        <a href="https://www.youtube.com/watch?v=YnEsxTtC01I" target="_blank" rel="noopener" class="watch-btn">
+                            <i class="fab fa-youtube"></i> Watch on YouTube
                         </a>
+
+                        <!-- Festival Laurels -->
+                        <div class="laurels-section">
+                            <div class="laurels-title"><i class="fas fa-award" style="color:gold;margin-right:0.4rem;"></i> Festival Recognition</div>
+                            <div class="laurels-grid">
+                                <div class="laurel-badge">
+                                    <i class="fas fa-star laurel-icon"></i>
+                                    <span>Official Selection — South Asian Short Film Festival 2020</span>
+                                </div>
+                                <div class="laurel-badge">
+                                    <i class="fas fa-star laurel-icon"></i>
+                                    <span>Official Selection — Darbhanga International Film Festival 2020</span>
+                                </div>
+                                <div class="laurel-badge semi-finalist">
+                                    <i class="fas fa-ribbon laurel-icon"></i>
+                                    <span>Semi-Finalist — Durgapur International Film Festival 2020</span>
+                                </div>
+                                <div class="laurel-badge semi-finalist">
+                                    <i class="fas fa-ribbon laurel-icon"></i>
+                                    <span>Semi-Finalist — Amber International Film Festival 2021</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- FILM 2: Makke Ki Roti -->
+                    <div class="film-showcase-card">
+                        <div class="film-title-row">
+                            <h3>Makke Ki Roti</h3>
+                            <span class="film-genre-badge">Drama</span>
+                            <span class="film-genre-badge" style="background:rgba(255,215,0,0.15);border-color:rgba(255,215,0,0.4);color:gold;">2 Festival Wins</span>
+                        </div>
+                        <div class="film-meta">Writer &amp; Director &nbsp;|&nbsp; Short Film &nbsp;|&nbsp; 2017</div>
+                        <p class="film-description">A touching short film about the relationship between a mother and son, told through the simple yet profound act of making Makke Ki Roti. Selected and recognized at international film festivals for its emotional authenticity and human storytelling.</p>
+
+                        <!-- YouTube embed -->
+                        <div class="film-embed">
+                            <iframe src="https://www.youtube.com/embed/8XHlPv_4nP0" title="Makke Ki Roti - Short Film" allowfullscreen loading="lazy"></iframe>
+                        </div>
+
+                        <a href="https://www.youtube.com/watch?v=8XHlPv_4nP0" target="_blank" rel="noopener" class="watch-btn">
+                            <i class="fab fa-youtube"></i> Watch on YouTube
+                        </a>
+
+                        <!-- Festival Laurels -->
+                        <div class="laurels-section">
+                            <div class="laurels-title"><i class="fas fa-award" style="color:gold;margin-right:0.4rem;"></i> Festival Recognition</div>
+                            <div class="laurels-grid">
+                                <div class="laurel-badge">
+                                    <i class="fas fa-star laurel-icon"></i>
+                                    <span>Official Selection — Acharya Tulsi Short Film Festival 2017</span>
+                                </div>
+                                <div class="laurel-badge semi-finalist">
+                                    <i class="fas fa-ribbon laurel-icon"></i>
+                                    <span>Semi-Finalist — Screen Short Fest 2017–2018</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Creative Philosophy -->
+                    <div class="creative-philosophy" style="margin-top:1rem;">
+                        <h4><i class="fas fa-palette" style="color:#ff8c00;margin-right:0.5rem;"></i> Why Filmmaking Matters for DevRel</h4>
+                        <p>Great developer advocacy is fundamentally about storytelling — making the complex feel human, the technical feel approachable, and the abstract feel real. The same instincts that go into writing a film script — clarity of message, emotional arc, respect for your audience's time — are exactly what makes technical content land.</p>
+                        <p>Filmmaking taught me to <strong>show, not tell</strong>. That principle shapes every demo, every talk, and every piece of content I create.</p>
+                    </div>
+
                 </div>
             </div>
 
@@ -308,33 +299,30 @@
                     <h3><i class="fas fa-star" style="color:#ff8c00;margin-right:0.5rem;"></i> Creative Impact &amp; Recognition</h3>
                     <p>How filmmaking enhances my professional and personal growth</p>
                 </div>
-                
                 <div class="impact-grid">
                     <div class="impact-item">
                         <div class="impact-icon"><i class="fas fa-comments" style="color:#ff8c00;font-size:2rem;"></i></div>
                         <h4>Enhanced Communication</h4>
-                        <p>Filmmaking has sharpened my ability to communicate complex ideas visually and narratively, skills that translate directly to technical presentations and team leadership.</p>
+                        <p>Filmmaking has sharpened my ability to communicate complex ideas visually and narratively — skills that translate directly to technical presentations and developer content.</p>
                     </div>
-                    
                     <div class="impact-item">
                         <div class="impact-icon"><i class="fas fa-lightbulb" style="color:#ff8c00;font-size:2rem;"></i></div>
                         <h4>Creative Problem Solving</h4>
-                        <p>The creative challenges in filmmaking have enhanced my ability to think outside the box when solving technical problems in SRE and infrastructure work.</p>
+                        <p>The creative challenges in filmmaking enhanced my ability to think outside the box — a mindset that applies equally to SRE, infrastructure, and developer advocacy work.</p>
                     </div>
-                    
                     <div class="impact-item">
                         <div class="impact-icon"><i class="fas fa-users" style="color:#ff8c00;font-size:2rem;"></i></div>
                         <h4>Team Collaboration</h4>
-                        <p>Managing film productions has strengthened my project management and team coordination skills, valuable assets in leading technical teams.</p>
+                        <p>Managing film productions strengthened my project management and team coordination skills — valuable assets when leading technical communities and cross-functional initiatives.</p>
                     </div>
-                    
                     <div class="impact-item">
                         <div class="impact-icon"><i class="fas fa-sync-alt" style="color:#ff8c00;font-size:2rem;"></i></div>
                         <h4>Iterative Excellence</h4>
-                        <p>The iterative nature of filmmaking - from script to screen - mirrors the continuous improvement mindset essential in DevOps and SRE practices.</p>
+                        <p>The iterative nature of filmmaking — from script to screen — mirrors the continuous improvement mindset essential in DevOps, SRE, and content creation.</p>
                     </div>
                 </div>
             </div>
+
         </div>
     </main>
 
