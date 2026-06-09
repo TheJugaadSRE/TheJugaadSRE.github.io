@@ -5986,171 +5986,133 @@ body.theme-energetic .blackhole-background {
     .hero-brand { flex-wrap: wrap; justify-content: center; gap: 0.3rem; }
 }
 
-/* Mobile performance - reduce heavy animations */
-@media (max-width: 768px) {
-    .cosmic-scene { opacity: 0.4; }
-    .wormhole, .blackhole-system, .nebula, .cosmic-dust { display: none; }
-    .star-field .star { animation-duration: 4s; }
-    .space-particles .particle { display: none; }
-    .comet { display: none; }
-    * { -webkit-overflow-scrolling: touch; }
-    html { scroll-behavior: smooth; }
-}
 
 /* ============================================
-   AGGRESSIVE MOBILE PERFORMANCE OPTIMIZATIONS
+   MOBILE — clean consolidated fix (June 2026)
+   Desktop is 100% untouched above this line.
    ============================================ */
+
 @media (max-width: 768px) {
-    /* Kill ALL cosmic background animations on mobile */
-    .solar-system,
-    .sun, .sun-core, .sun-corona,
-    .planet, .moon,
-    .asteroid-belt, .asteroid,
-    .wormhole, .wormhole-entrance, .wormhole-tunnel, .wormhole-exit, .wormhole-energy, .wormhole-donut,
-    .blackhole-system, .blackhole-center, .accretion-disk, .event-horizon, .gravitational-lensing, .hawking-radiation,
-    .nebula, .cosmic-dust,
-    .comet, .comet-tail,
+
+    /* 1. Kill ALL heavy cosmic animations */
+    .solar-system, .sun, .sun-core, .sun-corona,
+    .planet, .moon, .asteroid-belt, .asteroid,
+    .wormhole, .wormhole-entrance, .wormhole-tunnel,
+    .wormhole-exit, .wormhole-energy, .wormhole-donut,
+    .blackhole-system, .blackhole-center, .accretion-disk,
+    .event-horizon, .gravitational-lensing, .hawking-radiation,
+    .nebula, .cosmic-dust, .comet, .comet-tail,
     .space-particles, .particle {
-        animation: none !important;
         display: none !important;
-    }
-
-    /* Keep stars but make them static */
-    .star { animation: none !important; opacity: 0.3; }
-
-    /* Reduce deep space opacity */
-    .cosmic-scene { opacity: 0.3; }
-    .deep-space { opacity: 0.5; }
-
-    /* GPU-accelerate the page scroll container */
-    body {
-        -webkit-overflow-scrolling: touch;
-        overflow-x: hidden;
-    }
-
-    /* Disable all fadeInUp animations on mobile - just show content */
-    [style*="animation"] { animation: none !important; opacity: 1 !important; }
-
-    /* Reduce page-level animations */
-    .hero-content, .about-content, .timeline-item,
-    .content-card, .skill-category, .vision-pillar {
         animation: none !important;
-        opacity: 1 !important;
-        transform: none !important;
     }
-}
+    .star { animation: none !important; opacity: 0.3; }
+    .cosmic-scene { opacity: 0.3 !important; }
+    .deep-space { opacity: 0.5; animation: none !important; }
 
-/* ============================================
-   MOBILE FIXES - Added June 2026
-   Desktop untouched. Mobile only.
-   ============================================ */
-
-/* ============================================
-   MOBILE FIXES - Added June 2026
-   Desktop untouched. Mobile only.
-   ============================================ */
-
-/* 1. Hide solar system on mobile - it's the biggest perf killer */
-@media (max-width: 768px) {
-    .solar-system { display: none !important; }
-
-    /* 2. Reduce cosmic scene opacity so text stays readable */
-    .cosmic-scene { opacity: 0.25 !important; }
-
-    /* 3. CRITICAL: Hero height fix — 100vh locks the page on mobile,
-       nothing below hero is scrollable. Change to min-height. */
+    /* 2. CRITICAL SCROLL FIX
+       hero { height:100vh; overflow:hidden } locks the page.
+       Changing to auto lets content below scroll into view. */
     .hero {
         height: auto !important;
-        min-height: 100vh !important;
+        min-height: 100svh !important;
         overflow: visible !important;
     }
 
-    /* 4. Fix navbar - hamburger was defined but hamburger display wasn't set on desktop */
-    .hamburger { display: none; }
-}
-@media (max-width: 768px) {
-    .hamburger { display: flex !important; }
-}
+    /* 3. Ensure body scrolls freely — override overscroll-behavior-y:none */
+    html {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+    }
+    body {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        overscroll-behavior-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
 
-/* 4. Fix hero stats - was 4 columns on small screens, now wraps to 2x2 */
-@media (max-width: 600px) {
+    /* 4. Hamburger */
+    .hamburger { display: flex !important; }
+
+    /* 5. Show content immediately — no entry animations on mobile */
+    .hero-content, .about-content, .timeline-item,
+    .content-card, .skill-category, .vision-pillar,
+    .strength-item, .summary-stat {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
+    /* 6. Touch targets */
+    .cta-primary, .cta-secondary {
+        min-height: 48px;
+        font-size: 1rem !important;
+        width: 100%;
+        text-align: center;
+    }
+    .nav-menu a { min-height: 44px; display: flex; align-items: center; }
+
+    /* 7. Hero stats 2x2 grid */
     .hero-stats {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
         gap: 0.8rem !important;
     }
-    .stat {
-        padding: 0.8rem !important;
-        text-align: center;
-    }
-    .stat-number { font-size: 1.6rem !important; }
-    .stat-label { font-size: 0.7rem !important; }
-}
 
-/* 5. Fix timeline on mobile - date and content were overflowing */
-@media (max-width: 768px) {
-    .timeline-item {
-        flex-direction: column !important;
+    /* 8. General layout */
+    .container { padding: 0 1rem; }
+    .page-content { padding: 5rem 1rem 2rem; }
+    .hero { padding: 6rem 1rem 3rem; text-align: center; }
+    .hero h1 { font-size: 2.5rem; }
+    .hero-subtitle { font-size: 1.2rem; }
+
+    /* 9. Navbar */
+    .navbar { padding: 0.8rem 1rem; }
+    .nav-logo h2 { font-size: 1.2rem; }
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px; left: 0; right: 0;
+        background: rgba(0,0,0,0.97);
+        padding: 1rem;
+        z-index: 999;
         gap: 0.5rem;
     }
-    .timeline-date {
-        flex-direction: row !important;
-        gap: 0.8rem;
-        align-items: center;
-    }
-    .tech-tags {
-        flex-wrap: wrap !important;
-        gap: 0.4rem !important;
-    }
-    .tag {
-        font-size: 0.72rem !important;
-        padding: 3px 8px !important;
-    }
+    .nav-menu.active { display: flex; }
+
+    /* 10. Page layouts */
+    .about-content { flex-direction: column; gap: 2rem; }
+    .about-text, .about-visual { width: 100%; }
+    .strengths-grid { grid-template-columns: 1fr; }
+    .timeline-item { flex-direction: column; }
+    .timeline-date { min-width: unset; margin-bottom: 0.5rem; }
+    .tech-tags { flex-wrap: wrap !important; gap: 0.4rem !important; }
+    .tag { font-size: 0.72rem !important; padding: 3px 8px !important; }
+    .devrel-highlights { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .content-grid { grid-template-columns: 1fr; }
+    .vision-content { grid-template-columns: 1fr; }
+    .contact-grid { flex-direction: column; gap: 2rem; }
+    .opportunities-grid { grid-template-columns: 1fr; }
+    .response-details { flex-direction: column; gap: 1rem; }
+    .films-two-col { grid-template-columns: 1fr !important; }
+    .nav-cards { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .floating-elements { display: none; }
+    .hero-cta { flex-direction: column; align-items: center; gap: 0.8rem; }
 }
 
-/* 6. Fix touch targets - buttons too small on mobile */
-@media (max-width: 768px) {
-    .cta-primary, .cta-secondary {
-        padding: 0.9rem 1.5rem !important;
-        font-size: 1rem !important;
-        min-height: 48px;
-    }
-    .nav-menu a {
-        padding: 0.6rem 0 !important;
-        font-size: 1rem !important;
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-    }
+@media (max-width: 480px) {
+    .hero h1 { font-size: 2rem; }
+    .nav-cards { grid-template-columns: 1fr; }
+    .devrel-highlights { grid-template-columns: 1fr; }
+    .page-header h1 { font-size: 1.5rem; }
+    .hero-brand { flex-wrap: wrap; justify-content: center; gap: 0.3rem; }
 }
 
-/* 7. Fix films page embed on mobile */
-@media (max-width: 768px) {
-    .film-embed { margin-bottom: 1rem; }
-    .films-stats-row {
-        flex-wrap: wrap;
-        gap: 1rem;
-        justify-content: center;
-    }
-    .film-stat { min-width: 80px; }
-    .laurels-grid { flex-direction: column; }
-    .film-showcase-card { padding: 1rem !important; }
-}
-
-/* 8. Fix about page creative grid on mobile */
-@media (max-width: 600px) {
-    div[style*="grid-template-columns: 1fr 1fr"] {
-        grid-template-columns: 1fr !important;
-    }
-}
-
-/* 9. Respect system reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-    .solar-system, .wormhole, .blackhole-system,
-    .nebula, .cosmic-dust, .comet, .particle,
-    .planet, .sun, .asteroid-belt {
+    *, *::before, *::after {
         animation: none !important;
-        display: none !important;
+        transition: none !important;
     }
-    .star { animation: none !important; }
 }

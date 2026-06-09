@@ -1,1692 +1,321 @@
-﻿// Mobile Navigation Toggle
+// ============================================
+// SCRIPT.JS - Fixed version
+// Key fixes:
+// 1. Hamburger wrapped in null check - no more crash
+// 2. Mobile: all cosmic JS disabled to fix scroll
+// 3. Scroll listeners use passive:true throughout
+// ============================================
+
+const isMobile = window.innerWidth <= 768;
+
+// ---- HAMBURGER NAV (null-safe) ----
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
 
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
+if (hamburger && navMenu) {
+    hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
+    document.addEventListener('click', (e) => {
+        if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+        }
+    });
+}
 
-// Close mobile menu when clicking on a link
+// Close menu on nav link click
 document.querySelectorAll('.nav-menu a').forEach(link => {
     link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
+        if (hamburger) hamburger.classList.remove('active');
+        if (navMenu) navMenu.classList.remove('active');
     });
 });
 
-// Smooth scrolling for navigation links
+// ---- SMOOTH SCROLL for anchor links ----
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
+    anchor.addEventListener('click', function(e) {
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     });
 });
 
-// Navbar background change on scroll - throttled for performance
-let ticking = false;
-window.addEventListener("scroll", () => {
-    if (!ticking) {
-        requestAnimationFrame(() => {
-            const navbar = document.querySelector(".navbar");
-            if (window.scrollY > 100) {
-                navbar.style.background = "rgba(0, 0, 0, 0.95)";
-                navbar.style.boxShadow = "0 2px 20px rgba(0,0,0,0.3)";
-            } else {
-                navbar.style.background = "rgba(0, 0, 0, 0.8)";
-                navbar.style.boxShadow = "none";
-            }
-            ticking = false;
-        });
-        ticking = true;
+// ---- NAVBAR background on scroll ----
+window.addEventListener('scroll', () => {
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        navbar.style.background = window.scrollY > 100
+            ? 'rgba(0,0,0,0.95)'
+            : 'rgba(0,0,0,0.8)';
     }
 }, { passive: true });
 
-// Intersection Observer for animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe elements for animation
-document.querySelectorAll('.timeline-item, .content-card, .travel-card').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-});
-
-// Counter animation for stats
-function animateCounter(element, target, duration = 2000) {
-    let start = 0;
-    const increment = target / (duration / 16);
-    
-    function updateCounter() {
-        start += increment;
-        if (start < target) {
-            element.textContent = Math.floor(start);
-            requestAnimationFrame(updateCounter);
-        } else {
-            element.textContent = target;
-        }
-    }
-    
-    updateCounter();
-}
-
-// Animate counters when hero section is visible
-const heroObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const statNumbers = document.querySelectorAll('.stat-number');
-            statNumbers.forEach(stat => {
-                const text = stat.textContent;
-                const number = parseInt(text.replace(/\D/g, ''));
-                if (number) {
-                    stat.textContent = '0';
-                    setTimeout(() => {
-                        animateCounter(stat, number);
-                        // Add back the suffix
-                        setTimeout(() => {
-                            if (text.includes('+')) {
-                                stat.textContent = number + '+';
-                            }
-                        }, 2000);
-                    }, 500);
-                }
-            });
-            heroObserver.unobserve(entry.target);
-        }
-    });
-});
-
-const heroSection = document.querySelector('.hero');
-if (heroSection) {
-    heroObserver.observe(heroSection);
-}
-
-// FORCE COSMIC SCENE IMMEDIATELY
-document.body.style.background = '#000000';
-document.body.style.color = '#ffffff';
-
-// Create cosmic scene if it doesn't exist
-if (!document.querySelector('.cosmic-scene')) {
-    const cosmicScene = document.createElement('div');
-    cosmicScene.className = 'cosmic-scene';
-    cosmicScene.innerHTML = `
-        <div class="deep-space"></div>
-        <div class="star-field">
-            ${Array.from({length: 20}, (_, i) => `<div class="star"></div>`).join('')}
-        </div>
-        <div class="solar-system">
-            <div class="sun"><div class="sun-core"></div><div class="sun-corona"></div></div>
-            <div class="planet mercury"></div>
-            <div class="planet venus"></div>
-            <div class="planet earth"><div class="moon"></div></div>
-            <div class="planet mars"></div>
-            <div class="planet jupiter"><div class="jupiter-spot"></div></div>
-            <div class="planet saturn"><div class="saturn-rings"></div></div>
-            <div class="planet uranus"></div>
-            <div class="planet neptune"></div>
-        </div>
-        <div class="wormhole">
-            <div class="wormhole-entrance"></div>
-            <div class="wormhole-tunnel"></div>
-            <div class="wormhole-exit"></div>
-            <div class="wormhole-energy"></div>
-        </div>
-        <div class="blackhole-system">
-            <div class="gravitational-lensing"></div>
-            <div class="accretion-disk"></div>
-            <div class="blackhole-center"></div>
-            <div class="event-horizon"></div>
-            <div class="hawking-radiation"></div>
-        </div>
-        <div class="nebula"></div>
-        <div class="cosmic-dust"></div>
-        <div class="space-particles">
-            ${Array.from({length: 15}, (_, i) => `<div class="particle"></div>`).join('')}
-        </div>
-    `;
-    document.body.insertBefore(cosmicScene, document.body.firstChild);
-}
-
-// CLEAN WEBSITE ENTRY - No mood popup needed
+// ---- ACTIVE NAV STATE ----
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('=== INITIALIZING WEBSITE ===');
-    
-    // Completely remove mood popup
-    const moodPopup = document.getElementById('moodPopup');
-    if (moodPopup) {
-        moodPopup.remove();
-        console.log('=== MOOD POPUP REMOVED ===');
-    }
-    
-    // Set default theme and make website immediately accessible
-    const defaultMood = 'excited';
-    sessionStorage.setItem('userMood', defaultMood);
-    applyTheme(defaultMood);
-    
-    // Make website visible immediately
-    document.body.style.opacity = '1';
-    document.body.style.transition = 'opacity 0.5s ease';
-    
-    // Ensure cosmic scene is visible
-    const cosmicScene = document.querySelector('.cosmic-scene');
-    if (cosmicScene) {
-        cosmicScene.style.display = 'block';
-        cosmicScene.style.visibility = 'visible';
-        cosmicScene.style.opacity = '1';
-        cosmicScene.style.zIndex = '-1';
-        console.log('=== COSMIC SCENE VISIBLE ===');
-    }
-    
-    // Ensure all cosmic elements are visible
-    const cosmicElements = [
-        '.solar-system',
-        '.wormhole', 
-        '.blackhole-system',
-        '.blackhole-center',
-        '.accretion-disk',
-        '.event-horizon'
-    ];
-    
-    cosmicElements.forEach(selector => {
-        const element = document.querySelector(selector);
-        if (element) {
-            element.style.display = 'block';
-            element.style.visibility = 'visible';
-            element.style.opacity = '1';
-        }
-    });
-    
-    // Show welcome message
-    setTimeout(() => {
-        showWelcomeMessage(defaultMood);
-    }, 1000);
-    
-    console.log('=== WEBSITE READY ===');
-});
-
-// Apply theme based on mood
-function applyTheme(mood) {
-    // Remove existing theme classes
-    document.body.className = document.body.className.replace(/theme-\w+/g, '');
-    
-    // Add new theme class
-    document.body.classList.add(`theme-${mood}`);
-    
-    // Update CSS custom properties for dynamic theming
-    const themeColors = {
-        excited: { primary: '#ff4757', secondary: '#ff6b7a', accent: '#ff3742' },
-        curious: { primary: '#3742fa', secondary: '#5352ed', accent: '#2f3542' },
-        focused: { primary: '#2ed573', secondary: '#7bed9f', accent: '#1e90ff' },
-        creative: { primary: '#ff6348', secondary: '#ff7675', accent: '#fd79a8' },
-        peaceful: { primary: '#70a1ff', secondary: '#5352ed', accent: '#3742fa' },
-        adventurous: { primary: '#ffa502', secondary: '#ff6348', accent: '#ff4757' },
-        nostalgic: { primary: '#747d8c', secondary: '#a4b0be', accent: '#57606f' },
-        ambitious: { primary: '#ffd700', secondary: '#ffb142', accent: '#ff6348' },
-        contemplative: { primary: '#6c5ce7', secondary: '#a29bfe', accent: '#fd79a8' },
-        energetic: { primary: '#00d2d3', secondary: '#7bed9f', accent: '#2ed573' }
-    };
-    
-    const colors = themeColors[mood];
-    if (colors) {
-        document.documentElement.style.setProperty('--primary-color', colors.primary);
-        document.documentElement.style.setProperty('--secondary-color', colors.secondary);
-        document.documentElement.style.setProperty('--accent-color', colors.accent);
-    }
-    
-    // Update particle colors based on theme
-    updateParticleColors(mood);
-    
-    // Update navigation glow
-    updateNavigationGlow(mood);
-}
-
-// Update particle colors based on mood
-function updateParticleColors(mood) {
-    const particles = document.querySelectorAll('.particle');
-    const colorMap = {
-        excited: 'rgba(255, 71, 87, 0.8)',
-        curious: 'rgba(55, 66, 250, 0.8)',
-        focused: 'rgba(46, 213, 115, 0.8)',
-        creative: 'rgba(255, 99, 72, 0.8)',
-        peaceful: 'rgba(112, 161, 255, 0.8)',
-        adventurous: 'rgba(255, 165, 2, 0.8)',
-        nostalgic: 'rgba(164, 176, 190, 0.8)',
-        ambitious: 'rgba(255, 215, 0, 0.8)',
-        contemplative: 'rgba(108, 92, 231, 0.8)',
-        energetic: 'rgba(0, 210, 211, 0.8)'
-    };
-    
-    particles.forEach(particle => {
-        particle.style.background = colorMap[mood] || 'rgba(255, 255, 255, 0.8)';
-    });
-}
-
-// Update navigation glow based on mood
-function updateNavigationGlow(mood) {
-    const navLogo = document.querySelector('.nav-logo h2');
-    const navLinks = document.querySelectorAll('.nav-menu a');
-    
-    const glowColors = {
-        excited: 'rgba(255, 71, 87, 0.5)',
-        curious: 'rgba(55, 66, 250, 0.5)',
-        focused: 'rgba(46, 213, 115, 0.5)',
-        creative: 'rgba(255, 99, 72, 0.5)',
-        peaceful: 'rgba(112, 161, 255, 0.5)',
-        adventurous: 'rgba(255, 165, 2, 0.5)',
-        nostalgic: 'rgba(164, 176, 190, 0.5)',
-        ambitious: 'rgba(255, 215, 0, 0.5)',
-        contemplative: 'rgba(108, 92, 231, 0.5)',
-        energetic: 'rgba(0, 210, 211, 0.5)'
-    };
-    
-    const glowColor = glowColors[mood] || 'rgba(255, 140, 0, 0.5)';
-    
-    if (navLogo) {
-        navLogo.style.textShadow = `0 0 10px ${glowColor}`;
-    }
-    
-    navLinks.forEach(link => {
-        link.style.textShadow = `0 0 5px ${glowColor}`;
-    });
-}
-
-// Show personalized welcome message
-function showWelcomeMessage(mood) {
-    const messages = {
-        excited: "ðŸš€ Amazing! Your excitement is contagious. Let's explore the universe together!",
-        curious: "ðŸ” Perfect! Your curiosity will unlock incredible discoveries here.",
-        focused: "ðŸŽ¯ Excellent! Your focus will help you absorb every detail of this journey.",
-        creative: "ðŸŽ¨ Wonderful! Your creativity will see possibilities others might miss.",
-        peaceful: "ðŸ§˜ Beautiful! Your peaceful energy creates the perfect space for learning.",
-        adventurous: "ðŸŒ Fantastic! Your adventurous spirit is exactly what this exploration needs.",
-        nostalgic: "ðŸ’­ Lovely! Your reflective nature will find deep meaning in this experience.",
-        ambitious: "ðŸ’ª Outstanding! Your ambition will drive you to achieve great things here.",
-        contemplative: "ðŸ¤” Perfect! Your thoughtful approach will uncover profound insights.",
-        energetic: "âš¡ Incredible! Your energy will power through every section with enthusiasm!"
-    };
-    
-    // Create and show welcome toast
-    const toast = document.createElement('div');
-    toast.className = 'welcome-toast';
-    toast.innerHTML = `
-        <div class="toast-content">
-            <p>${messages[mood]}</p>
-        </div>
-    `;
-    
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.style.animation = 'slideOut 0.5s ease';
-        setTimeout(() => toast.remove(), 500);
-    }, 4000);
-}
-
-// BULLETPROOF COSMIC AUDIO SYSTEM
-console.log('ðŸš€ LOADING COSMIC AUDIO SYSTEM...');
-
-// Global variables to prevent conflicts
-window.cosmicAudio = {
-    isPlaying: false,
-    audioContext: null,
-    currentSources: [],
-    currentTrack: 'deep-space'
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('ðŸŽµ Initializing Cosmic Audio...');
-    
-    // Get elements
-    const audioToggle = document.getElementById('audioToggle');
-    const playlistToggle = document.getElementById('playlistToggle');
-    const musicPlaylist = document.getElementById('musicPlaylist');
-    
-    console.log('ðŸ” Elements found:', {
-        audioToggle: !!audioToggle,
-        playlistToggle: !!playlistToggle,
-        musicPlaylist: !!musicPlaylist
-    });
-    
-    // Cosmic soundscapes
-    const cosmicTracks = {
-        'deep-space': {
-            name: 'ðŸŒŒ Deep Space Humming',
-            create: function(ctx) {
-                const sources = [];
-                
-                // Main hum
-                const hum = ctx.createOscillator();
-                const humGain = ctx.createGain();
-                hum.frequency.setValueAtTime(60, ctx.currentTime);
-                hum.type = 'sine';
-                humGain.gain.setValueAtTime(0.3, ctx.currentTime);
-                hum.connect(humGain);
-                humGain.connect(ctx.destination);
-                hum.start();
-                sources.push(hum);
-                
-                // Harmonic
-                const harmonic = ctx.createOscillator();
-                const harmonicGain = ctx.createGain();
-                harmonic.frequency.setValueAtTime(120, ctx.currentTime);
-                harmonic.type = 'triangle';
-                harmonicGain.gain.setValueAtTime(0.1, ctx.currentTime);
-                harmonic.connect(harmonicGain);
-                harmonicGain.connect(ctx.destination);
-                harmonic.start();
-                sources.push(harmonic);
-                
-                return sources;
-            }
-        },
-        
-        'cosmic-winds': {
-            name: 'ðŸ’¨ Cosmic Winds',
-            create: function(ctx) {
-                const sources = [];
-                
-                // Create noise buffer
-                const bufferSize = ctx.sampleRate * 2;
-                const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-                const output = noiseBuffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    output[i] = Math.random() * 2 - 1;
-                }
-                
-                const whiteNoise = ctx.createBufferSource();
-                whiteNoise.buffer = noiseBuffer;
-                whiteNoise.loop = true;
-                
-                const filter = ctx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(800, ctx.currentTime);
-                
-                const windGain = ctx.createGain();
-                windGain.gain.setValueAtTime(0.2, ctx.currentTime);
-                
-                whiteNoise.connect(filter);
-                filter.connect(windGain);
-                windGain.connect(ctx.destination);
-                whiteNoise.start();
-                sources.push(whiteNoise);
-                
-                return sources;
-            }
-        },
-        
-        'stellar-harmony': {
-            name: 'â­ Stellar Harmony',
-            create: function(ctx) {
-                const sources = [];
-                const frequencies = [220, 330, 440, 550];
-                
-                frequencies.forEach(freq => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    
-                    osc.frequency.setValueAtTime(freq, ctx.currentTime);
-                    osc.type = 'sine';
-                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                    
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start();
-                    sources.push(osc);
-                });
-                
-                return sources;
-            }
-        },
-        
-        'nebula-dreams': {
-            name: 'ðŸŒ  Nebula Dreams',
-            create: function(ctx) {
-                const sources = [];
-                
-                const pad1 = ctx.createOscillator();
-                const pad2 = ctx.createOscillator();
-                const padGain = ctx.createGain();
-                
-                pad1.frequency.setValueAtTime(110, ctx.currentTime);
-                pad2.frequency.setValueAtTime(165, ctx.currentTime);
-                pad1.type = 'sawtooth';
-                pad2.type = 'sawtooth';
-                
-                const filter = ctx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(400, ctx.currentTime);
-                
-                padGain.gain.setValueAtTime(0.15, ctx.currentTime);
-                
-                pad1.connect(filter);
-                pad2.connect(filter);
-                filter.connect(padGain);
-                padGain.connect(ctx.destination);
-                
-                pad1.start();
-                pad2.start();
-                sources.push(pad1, pad2);
-                
-                return sources;
-            }
-        },
-        
-        'quantum-pulse': {
-            name: 'âš›ï¸ Quantum Pulse',
-            create: function(ctx) {
-                const sources = [];
-                
-                const pulse = ctx.createOscillator();
-                const pulseGain = ctx.createGain();
-                
-                pulse.frequency.setValueAtTime(80, ctx.currentTime);
-                pulse.type = 'square';
-                pulseGain.gain.setValueAtTime(0.2, ctx.currentTime);
-                
-                pulse.connect(pulseGain);
-                pulseGain.connect(ctx.destination);
-                pulse.start();
-                sources.push(pulse);
-                
-                return sources;
-            }
-        }
-    };
-    
-    // Audio functions
-    function initAudioContext() {
-        if (!window.cosmicAudio.audioContext) {
-            window.cosmicAudio.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            console.log('ðŸŽ¼ Audio context created');
-        }
-        return window.cosmicAudio.audioContext;
-    }
-    
-    function stopAllSources() {
-        window.cosmicAudio.currentSources.forEach(source => {
-            try {
-                source.stop();
-            } catch (e) {
-                // Already stopped
-            }
-        });
-        window.cosmicAudio.currentSources = [];
-    }
-    
-    function playTrack(trackId) {
-        console.log(`ðŸŽµ Playing: ${trackId}`);
-        
-        try {
-            stopAllSources();
-            
-            const ctx = initAudioContext();
-            
-            if (ctx.state === 'suspended') {
-                ctx.resume().then(() => {
-                    startTrack(trackId, ctx);
-                });
-            } else {
-                startTrack(trackId, ctx);
-            }
-        } catch (error) {
-            console.error('âŒ Play error:', error);
-            alert('Audio error: ' + error.message);
-        }
-    }
-    
-    function startTrack(trackId, ctx) {
-        if (cosmicTracks[trackId]) {
-            window.cosmicAudio.currentSources = cosmicTracks[trackId].create(ctx);
-            window.cosmicAudio.currentTrack = trackId;
-            window.cosmicAudio.isPlaying = true;
-            updateUI();
-            console.log(`âœ… Playing: ${cosmicTracks[trackId].name}`);
-        }
-    }
-    
-    function stopAudio() {
-        stopAllSources();
-        window.cosmicAudio.isPlaying = false;
-        updateUI();
-        console.log('â¹ï¸ Audio stopped');
-    }
-    
-    function updateUI() {
-        if (audioToggle) {
-            if (window.cosmicAudio.isPlaying) {
-                audioToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
-                audioToggle.classList.remove('muted');
-                audioToggle.title = 'Stop Audio';
-                audioToggle.style.boxShadow = '0 0 30px rgba(255, 140, 0, 0.8)';
-            } else {
-                audioToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                audioToggle.classList.add('muted');
-                audioToggle.title = 'Play Audio';
-                audioToggle.style.boxShadow = '0 0 20px rgba(255, 140, 0, 0.3)';
-            }
-        }
-    }
-    
-    // Button handlers
-    if (audioToggle) {
-        console.log('âœ… Setting up audio button');
-        audioToggle.addEventListener('click', () => {
-            console.log('ðŸŽµ Button clicked, isPlaying:', window.cosmicAudio.isPlaying);
-            if (window.cosmicAudio.isPlaying) {
-                stopAudio();
-            } else {
-                playTrack(window.cosmicAudio.currentTrack);
-            }
-        });
-        updateUI();
-    } else {
-        console.error('âŒ Audio button not found');
-    }
-    
-    // Playlist functionality
-    if (playlistToggle && musicPlaylist) {
-        playlistToggle.addEventListener('click', () => {
-            if (musicPlaylist.style.display === 'none' || !musicPlaylist.style.display) {
-                musicPlaylist.style.display = 'block';
-                playlistToggle.innerHTML = '<i class="fas fa-times"></i>';
-            } else {
-                musicPlaylist.style.display = 'none';
-                playlistToggle.innerHTML = '<i class="fas fa-list"></i>';
-            }
-        });
-    }
-    
-    // Track selection
-    document.querySelectorAll('.track-item').forEach(trackElement => {
-        trackElement.addEventListener('click', () => {
-            const trackId = trackElement.dataset.track;
-            console.log(`ðŸŽ¶ Track selected: ${trackId}`);
-            
-            if (trackId && cosmicTracks[trackId]) {
-                window.cosmicAudio.currentTrack = trackId;
-                playTrack(trackId);
-                
-                // Update UI
-                document.querySelectorAll('.track-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                trackElement.classList.add('active');
-                
-                // Hide playlist
-                if (musicPlaylist) {
-                    musicPlaylist.style.display = 'none';
-                    playlistToggle.innerHTML = '<i class="fas fa-list"></i>';
-                }
-            }
-        });
-    });
-    
-    // Test functions
-    window.testAudio = () => {
-        console.log('ðŸ§ª Testing audio...');
-        if (window.cosmicAudio.isPlaying) {
-            stopAudio();
-        } else {
-            playTrack('deep-space');
-        }
-    };
-    
-    window.testBeep = () => {
-        console.log('ðŸ”” Testing beep...');
-        try {
-            const ctx = initAudioContext();
-            if (ctx.state === 'suspended') ctx.resume();
-            
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            
-            osc.frequency.setValueAtTime(800, ctx.currentTime);
-            osc.type = 'sine';
-            gain.gain.setValueAtTime(0.3, ctx.currentTime);
-            
-            osc.start();
-            osc.stop(ctx.currentTime + 0.5);
-            
-            console.log('âœ… Beep played');
-        } catch (error) {
-            console.error('âŒ Beep failed:', error);
-        }
-    };
-    
-    console.log('ðŸŽµ COSMIC AUDIO SYSTEM READY!');
-    console.log('ðŸ§ª Test functions: testAudio(), testBeep()');
-    console.log('ðŸŽ›ï¸ Click speaker button to start!');
-});
-
-// Enhanced Black Hole Interactions
-document.addEventListener('mousemove', (e) => {
-    const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-    const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-    
-    const blackholeCenter = document.querySelector('.blackhole-center');
-    const gravitationalLensing = document.querySelector('.gravitational-lensing');
-    const accretionDisk = document.querySelector('.accretion-disk');
-    
-    if (blackholeCenter) {
-        const intensity = Math.sqrt(mouseX * mouseX + mouseY * mouseY);
-        blackholeCenter.style.transform = `translate(${-50 + mouseX * 3}%, ${-50 + mouseY * 3}%) scale(${1 + intensity * 0.2})`;
-    }
-    
-    if (gravitationalLensing) {
-        gravitationalLensing.style.transform = `translate(${-50 + mouseX * 2}%, ${-50 + mouseY * 2}%) scale(${1 + Math.abs(mouseX + mouseY) * 0.1})`;
-    }
-    
-    if (accretionDisk) {
-        const speed = 8 - Math.abs(mouseX + mouseY) * 3;
-        accretionDisk.style.animationDuration = `${Math.max(speed, 2)}s`;
-    }
-});
-
-// Black hole click interaction
-document.querySelector('.event-horizon')?.addEventListener('click', () => {
-    const eventHorizon = document.querySelector('.event-horizon');
-    const accretionDisk = document.querySelector('.accretion-disk');
-    
-    // Intense pulse effect
-    eventHorizon.style.animation = 'none';
-    eventHorizon.style.transform = 'translate(-50%, -50%) scale(1.5)';
-    eventHorizon.style.boxShadow = `
-        0 0 200px rgba(255, 140, 0, 1),
-        0 0 400px rgba(255, 69, 0, 0.8),
-        0 0 600px rgba(255, 140, 0, 0.6),
-        inset 0 0 100px rgba(0, 0, 0, 1)
-    `;
-    
-    // Speed up accretion disk
-    if (accretionDisk) {
-        accretionDisk.style.animationDuration = '1s';
-    }
-    
-    // Reset after effect
-    setTimeout(() => {
-        eventHorizon.style.animation = 'eventHorizonPulse 4s ease-in-out infinite';
-        eventHorizon.style.transform = 'translate(-50%, -50%) scale(1)';
-        if (accretionDisk) {
-            accretionDisk.style.animationDuration = '8s';
-        }
-    }, 2000);
-});
-
-// Initial body opacity - website is immediately visible
-document.body.style.opacity = '1';
-document.body.style.transition = 'opacity 0.5s ease';
-
-// Interstellar Wormhole Scroll Effects
-window.addEventListener('scroll', () => {
-    const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-    const wormhole = document.querySelector('.wormhole');
-    const wormholeEntrance = document.querySelector('.wormhole-entrance');
-    const wormholeTunnel = document.querySelector('.wormhole-tunnel');
-    const wormholeEnergy = document.querySelector('.wormhole-energy');
-    
-    if (wormhole) {
-        // Approach the wormhole as you scroll - Interstellar effect
-        const approachScale = 1 + scrollPercent * 2; // Gets bigger as you scroll
-        const approachBlur = Math.max(2 - scrollPercent * 1.5, 0.2); // Gets clearer as you approach
-        
-        wormhole.style.transform = `translate(-50%, -50%) scale(${approachScale})`;
-        wormhole.style.filter = `blur(${approachBlur}px)`;
-        
-        // Intensify the entrance glow
-        if (wormholeEntrance) {
-            const glowIntensity = 100 + scrollPercent * 200;
-            wormholeEntrance.style.boxShadow = `
-                0 0 ${glowIntensity}px rgba(138, 43, 226, ${0.8 + scrollPercent * 0.2}),
-                0 0 ${glowIntensity * 2}px rgba(75, 0, 130, ${0.6 + scrollPercent * 0.4}),
-                0 0 ${glowIntensity * 3}px rgba(138, 43, 226, ${0.4 + scrollPercent * 0.6}),
-                inset 0 0 ${50 + scrollPercent * 50}px rgba(0, 0, 0, 1)
-            `;
-        }
-        
-        // Speed up tunnel rotation as you approach
-        if (wormholeTunnel) {
-            const baseSpeed = 12;
-            const newSpeed = Math.max(baseSpeed - scrollPercent * 8, 2);
-            wormholeTunnel.style.animationDuration = `${newSpeed}s`;
-        }
-        
-        // Intensify energy streams
-        if (wormholeEnergy) {
-            const energySpeed = Math.max(18 - scrollPercent * 12, 3);
-            wormholeEnergy.style.animationDuration = `${energySpeed}s`;
-            wormholeEnergy.style.opacity = Math.min(0.7 + scrollPercent * 0.3, 1);
-        }
-    }
-    
-    // Black hole effects (keep existing)
-    const blackhole = document.querySelector('.blackhole-system');
-    const accretionDisk = document.querySelector('.accretion-disk');
-    const eventHorizon = document.querySelector('.event-horizon');
-    
-    if (blackhole) {
-        const intensity = Math.min(scrollPercent * 2, 1);
-        
-        if (accretionDisk) {
-            const baseSpeed = 12;
-            const newSpeed = Math.max(baseSpeed - scrollPercent * 8, 2);
-            accretionDisk.style.animationDuration = `${newSpeed}s`;
-        }
-        
-        if (eventHorizon) {
-            const glowIntensity = 50 + scrollPercent * 100;
-            eventHorizon.style.boxShadow = `
-                0 0 ${glowIntensity}px rgba(255, 140, 0, ${0.5 + scrollPercent * 0.5}),
-                0 0 ${glowIntensity * 2}px rgba(255, 69, 0, ${0.2 + scrollPercent * 0.3}),
-                inset 0 0 50px rgba(0, 0, 0, 1)
-            `;
-        }
-    }
-});
-
-// Mouse movement effect on black hole
-document.addEventListener('mousemove', (e) => {
-    const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-    const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-    
-    const blackholeCenter = document.querySelector('.blackhole-center');
-    const gravitationalLensing = document.querySelector('.gravitational-lensing');
-    
-    if (blackholeCenter) {
-        blackholeCenter.style.transform = `translate(${-50 + mouseX * 2}%, ${-50 + mouseY * 2}%) scale(${1 + Math.abs(mouseX + mouseY) * 0.1})`;
-    }
-    
-    if (gravitationalLensing) {
-        gravitationalLensing.style.transform = `translate(${-50 + mouseX * 1}%, ${-50 + mouseY * 1}%) scale(${1 + Math.abs(mouseX + mouseY) * 0.05})`;
-    }
-});
-
-// Add particle interaction on hero section
-const heroSection = document.querySelector('.hero');
-if (heroSection) {
-    heroSection.addEventListener('mouseenter', () => {
-        const particles = document.querySelectorAll('.particle');
-        particles.forEach(particle => {
-            particle.style.animationDuration = '5s';
-            particle.style.opacity = '1';
-        });
-    });
-    
-    heroSection.addEventListener('mouseleave', () => {
-        const particles = document.querySelectorAll('.particle');
-        particles.forEach(particle => {
-            particle.style.animationDuration = '10s';
-            particle.style.opacity = '0.8';
-        });
-    });
-}
-
-// Typing effect for hero headline
-function typeWriter(element, text, speed = 50) {
-    let i = 0;
-    element.innerHTML = '';
-    
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        }
-    }
-    type();
-}
-
-// Initialize typing effect when hero is visible
-const heroTypingObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const headline = document.querySelector('.headline-main');
-            if (headline) {
-                const originalText = headline.textContent;
-                setTimeout(() => {
-                    typeWriter(headline, originalText, 30);
-                }, 1000);
-            }
-            heroTypingObserver.unobserve(entry.target);
-        }
-    });
-});
-
-const heroElement = document.querySelector('.hero');
-if (heroElement) {
-    heroTypingObserver.observe(heroElement);
-}
-
-// Scroll indicator click handler
-const scrollIndicator = document.querySelector('.scroll-indicator');
-if (scrollIndicator) {
-    scrollIndicator.addEventListener('click', () => {
-        document.querySelector('#about').scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
-}
-
-// Parallax effect for floating elements
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const floatingElements = document.querySelectorAll('.float-item');
-    
-    floatingElements.forEach((element, index) => {
-        const speed = element.dataset.speed || 1;
-        const yPos = -(scrolled * speed * 0.1);
-        element.style.transform = `translateY(${yPos}px) rotate(${scrolled * 0.1}deg)`;
-    });
-});
-
-// Add hover effects to stats
-document.querySelectorAll('.stat').forEach(stat => {
-    stat.addEventListener('mouseenter', () => {
-        stat.style.transform = 'translateY(-10px) scale(1.05)';
-    });
-    
-    stat.addEventListener('mouseleave', () => {
-        stat.style.transform = 'translateY(0) scale(1)';
-    });
-});
-
-// Dynamic background color change based on scroll
-window.addEventListener('scroll', () => {
-    const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-    const hero = document.querySelector('.hero');
-    
-    if (hero && scrollPercent < 0.2) {
-        const opacity = Math.max(0.3, 1 - scrollPercent * 5);
-        hero.style.background = `linear-gradient(135deg, rgba(102, 126, 234, ${opacity}) 0%, rgba(118, 75, 162, ${opacity}) 100%)`;
-    }
-});
-
-// Add skill highlighting animation
-function highlightSkills() {
-    const highlights = document.querySelectorAll('.highlight');
-    highlights.forEach((highlight, index) => {
-        setTimeout(() => {
-            highlight.style.animation = 'pulse 0.6s ease';
-        }, index * 200);
-    });
-}
-
-// Trigger skill highlighting when about section is visible
-const skillsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            highlightSkills();
-            skillsObserver.unobserve(entry.target);
-        }
-    });
-});
-
-const aboutSection = document.querySelector('#about');
-if (aboutSection) {
-    skillsObserver.observe(aboutSection);
-}
-
-// Animate strength items on scroll
-const strengthObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const strengthItems = document.querySelectorAll('.strength-item');
-            strengthItems.forEach((item, index) => {
-                setTimeout(() => {
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateY(0)';
-                }, index * 100);
-            });
-            strengthObserver.unobserve(entry.target);
-        }
-    });
-});
-
-const strengthsGrid = document.querySelector('.strengths-grid');
-if (strengthsGrid) {
-    // Initially hide strength items
-    document.querySelectorAll('.strength-item').forEach(item => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(20px)';
-        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    });
-    strengthObserver.observe(strengthsGrid);
-}
-
-// Profile card hover effect
-const profileCard = document.querySelector('.profile-card');
-if (profileCard) {
-    profileCard.addEventListener('mouseenter', () => {
-        profileCard.style.transform = 'translateY(-10px) scale(1.02)';
-    });
-    
-    profileCard.addEventListener('mouseleave', () => {
-        profileCard.style.transform = 'translateY(0) scale(1)';
-    });
-}
-
-// Skills section animations
-const skillsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            // Animate skill level bars
-            const levelFills = entry.target.querySelectorAll('.level-fill');
-            levelFills.forEach((fill, index) => {
-                setTimeout(() => {
-                    const width = fill.dataset.width;
-                    fill.style.width = width + '%';
-                }, index * 200);
-            });
-            
-            // Animate skill items
-            const skillItems = entry.target.querySelectorAll('.skill-item');
-            skillItems.forEach((item, index) => {
-                setTimeout(() => {
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateY(0)';
-                }, index * 150);
-            });
-            
-            skillsObserver.unobserve(entry.target);
-        }
-    });
-});
-
-// Observe skills section
-const skillsSection = document.querySelector('.skills');
-if (skillsSection) {
-    // Initially hide skill items
-    document.querySelectorAll('.skill-item').forEach(item => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(20px)';
-        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    });
-    
-    skillsObserver.observe(skillsSection);
-}
-
-// Tech tags hover effects
-document.querySelectorAll('.tech-tag').forEach(tag => {
-    tag.addEventListener('mouseenter', () => {
-        tag.style.transform = 'translateY(-3px) scale(1.05)';
-    });
-    
-    tag.addEventListener('mouseleave', () => {
-        tag.style.transform = 'translateY(0) scale(1)';
-    });
-});
-
-// Summary items counter animation
-const summaryObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const summaryNumbers = entry.target.querySelectorAll('.summary-number');
-            summaryNumbers.forEach(number => {
-                const text = number.textContent;
-                const value = parseInt(text.replace(/\D/g, ''));
-                if (value) {
-                    number.textContent = '0';
-                    setTimeout(() => {
-                        animateCounter(number, value, 1500);
-                        setTimeout(() => {
-                            if (text.includes('+')) {
-                                number.textContent = value + '+';
-                            }
-                        }, 1500);
-                    }, 300);
-                }
-            });
-            summaryObserver.unobserve(entry.target);
-        }
-    });
-});
-
-const skillsSummary = document.querySelector('.skills-summary');
-if (skillsSummary) {
-    summaryObserver.observe(skillsSummary);
-}
-
-// Experience timeline animations
-const timelineObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const timelineItems = document.querySelectorAll('.timeline-item');
-            timelineItems.forEach((item, index) => {
-                setTimeout(() => {
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateX(0)';
-                }, index * 200);
-            });
-            timelineObserver.unobserve(entry.target);
-        }
-    });
-});
-
-const timelineSection = document.querySelector('.timeline');
-if (timelineSection) {
-    // Initially hide timeline items
-    document.querySelectorAll('.timeline-item').forEach(item => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateX(-30px)';
-        item.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-    });
-    timelineObserver.observe(timelineSection);
-}
-
-// Skill tags in experience section hover effects
-document.querySelectorAll('.skill-tag').forEach(tag => {
-    tag.addEventListener('mouseenter', () => {
-        tag.style.transform = 'translateY(-3px) scale(1.05)';
-    });
-    
-    tag.addEventListener('mouseleave', () => {
-        tag.style.transform = 'translateY(0) scale(1)';
-    });
-});
-
-// Career summary stats animation
-const careerSummaryObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const summaryStats = entry.target.querySelectorAll('.summary-stat');
-            summaryStats.forEach((stat, index) => {
-                setTimeout(() => {
-                    stat.style.opacity = '1';
-                    stat.style.transform = 'translateY(0)';
-                }, index * 150);
-            });
-            careerSummaryObserver.unobserve(entry.target);
-        }
-    });
-});
-
-const careerSummary = document.querySelector('.career-summary');
-if (careerSummary) {
-    // Initially hide summary stats
-    document.querySelectorAll('.summary-stat').forEach(stat => {
-        stat.style.opacity = '0';
-        stat.style.transform = 'translateY(20px)';
-        stat.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    });
-    careerSummaryObserver.observe(careerSummary);
-}
-// Multi-page Navigation
-document.addEventListener('DOMContentLoaded', () => {
-    // Close mobile menu when clicking on navigation links
-    document.querySelectorAll('.nav-menu a').forEach(link => {
-        link.addEventListener('click', () => {
-            const hamburger = document.querySelector('.hamburger');
-            const navMenu = document.querySelector('.nav-menu');
-            if (hamburger && navMenu) {
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
-            }
-        });
-    });
-    
-    // Set active navigation state based on current page
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    const navLinks = document.querySelectorAll('.nav-menu a');
-    
-    navLinks.forEach(link => {
+    document.querySelectorAll('.nav-menu a').forEach(link => {
         const href = link.getAttribute('href');
         if (href === currentPage || (currentPage === '' && href === 'index.html')) {
             link.classList.add('active');
-        } else {
-            link.classList.remove('active');
         }
     });
 });
-// Retro Birthday Ad Button Functionality
-document.addEventListener('DOMContentLoaded', () => {
-    const retroAdButton = document.getElementById('retroAdButton');
-    const birthdayBuddies = document.getElementById('birthdayBuddies');
-    const closeBirthday = document.getElementById('closeBirthday');
-    
-    if (retroAdButton && birthdayBuddies) {
-        // Handle ad button click
-        retroAdButton.addEventListener('click', () => {
-            // Hide the annoying ad button
-            retroAdButton.style.animation = 'fadeOut 0.5s ease';
-            setTimeout(() => {
-                retroAdButton.style.display = 'none';
-            }, 500);
-            
-            // Show birthday buddies section
-            birthdayBuddies.style.display = 'block';
-            
-            // Show birthday content
-            const birthdayContent = document.getElementById('birthdayContent');
-            if (birthdayContent) {
-                birthdayContent.style.display = 'block';
-            }
-            
-            // Add confetti celebration
-            createConfetti();
-            
-            // Scroll to the section
-            birthdayBuddies.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center' 
-            });
-        });
-        
-        // Handle close button
-        if (closeBirthday) {
-            closeBirthday.addEventListener('click', () => {
-                // Hide birthday section
-                birthdayBuddies.style.animation = 'slideOutToLeft 0.5s ease';
-                setTimeout(() => {
-                    birthdayBuddies.style.display = 'none';
-                    birthdayBuddies.style.animation = '';
-                    
-                    // Show the ad button again (like those persistent ads!)
-                    retroAdButton.style.display = 'flex';
-                    retroAdButton.style.animation = 'slideInFromLeft 0.5s ease';
-                }, 500);
-            });
-        }
-        
-        // Make the ad button extra annoying by occasionally changing text
-        setInterval(() => {
-            if (retroAdButton.style.display !== 'none') {
-                const adTexts = [
-                    'You share your BDay with',
-                    'ðŸŽ‚ Who shares your BDay?',
-                    'ðŸŽ‰ Your Birthday Buddies',
-                    'ðŸŽ Same Birthday as You!',
-                    'âœ¨ Birthday Twins!',
-                    'ðŸŽŠ Your BDay Match!',
-                    'ðŸ”¥ Birthday Connection!',
-                    'ðŸ’¥ Same Date Born!',
-                    'â­ Birthday Stars!',
-                    'ðŸ’Ž Birthday Gems!'
-                ];
-                const subTexts = [
-                    'Click to find out!',
-                    'Discover now!',
-                    'Find your twins!',
-                    'Amazing matches!',
-                    'Celebrity twins!',
-                    'Famous birthdays!',
-                    'Birthday magic!',
-                    'Discover stars!'
-                ];
-                
-                const randomText = adTexts[Math.floor(Math.random() * adTexts.length)];
-                const randomSubText = subTexts[Math.floor(Math.random() * subTexts.length)];
-                
-                const adTextElement = retroAdButton.querySelector('.ad-text');
-                const adSubTextElement = retroAdButton.querySelector('.ad-subtext');
-                
-                if (adTextElement) {
-                    adTextElement.textContent = randomText;
-                }
-                if (adSubTextElement) {
-                    adSubTextElement.textContent = randomSubText;
-                }
-            }
-        }, 3000);
-        
-        // Add random position shifts (like those annoying moving ads)
-        setInterval(() => {
-            if (retroAdButton.style.display !== 'none') {
-                const randomShift = Math.random() * 20 - 10; // -10 to +10px
-                retroAdButton.style.transform = `translateX(${randomShift}px)`;
-                
-                setTimeout(() => {
-                    retroAdButton.style.transform = 'translateX(0)';
-                }, 200);
-            }
-        }, 5000);
-        
-        // Add occasional size pulsing (extra annoying!)
-        setInterval(() => {
-            if (retroAdButton.style.display !== 'none') {
-                retroAdButton.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    retroAdButton.style.transform = 'scale(1)';
-                }, 300);
-            }
-        }, 8000);
-        
-        // Change border colors randomly
-        setInterval(() => {
-            if (retroAdButton.style.display !== 'none') {
-                const colors = ['#ffff00', '#ff0080', '#00ff80', '#ff8000', '#8000ff'];
-                const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                retroAdButton.style.borderColor = randomColor;
-            }
-        }, 2000);
-    }
-});
 
-// Fun confetti effect for birthday reveal
-function createConfetti() {
-    const colors = ['#ffd700', '#ff69b4', '#ff1493', '#ffb347', '#ffa500'];
-    const confettiContainer = document.createElement('div');
-    confettiContainer.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 9999;
-    `;
-    document.body.appendChild(confettiContainer);
-    
-    // Create confetti pieces
-    for (let i = 0; i < 50; i++) {
-        const confetti = document.createElement('div');
-        confetti.style.cssText = `
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: ${colors[Math.floor(Math.random() * colors.length)]};
-            top: -10px;
-            left: ${Math.random() * 100}%;
-            animation: confettiFall ${2 + Math.random() * 3}s linear forwards;
-            border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
-            transform: rotate(${Math.random() * 360}deg);
-        `;
-        confettiContainer.appendChild(confetti);
-    }
-    
-    // Remove confetti after animation
-    setTimeout(() => {
-        confettiContainer.remove();
-    }, 5000);
+// ---- INTERSECTION OBSERVER for timeline/cards ----
+// Skip on mobile to prevent scroll interference
+if (!isMobile) {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.timeline-item, .content-card, .travel-card').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
 }
 
-// Add confetti animation keyframes
-const confettiStyle = document.createElement('style');
-confettiStyle.textContent = `
-    @keyframes confettiFall {
-        0% {
-            transform: translateY(-10px) rotate(0deg);
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(100vh) rotate(720deg);
-            opacity: 0;
-        }
-    }
-    
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateY(-20px);
+// ---- COUNTER ANIMATION ----
+function animateCounter(element, target, duration = 2000) {
+    let start = 0;
+    const increment = target / (duration / 16);
+    const suffix = element.dataset.suffix || '';
+    function update() {
+        start += increment;
+        if (start < target) {
+            element.textContent = Math.floor(start) + suffix;
+            requestAnimationFrame(update);
+        } else {
+            element.textContent = target + suffix;
         }
     }
-`;
-document.head.appendChild(confettiStyle);
+    update();
+}
 
-// ===== STANDALONE COSMIC AUDIO SYSTEM =====
-// This system is completely self-contained and bulletproof
-(function() {
-    'use strict';
-    
-    console.log('ðŸš€ LOADING STANDALONE COSMIC AUDIO...');
-    
-    // Completely isolated audio system
-    const COSMIC_AUDIO = {
-        isPlaying: false,
-        audioContext: null,
-        currentSources: [],
-        currentTrack: 'deep-space',
-        
-        // Initialize audio context
-        initContext: function() {
-            if (!this.audioContext) {
-                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                console.log('ðŸŽ¼ Audio context created');
-            }
-            return this.audioContext;
-        },
-        
-        // Stop all current sources
-        stopAll: function() {
-            this.currentSources.forEach(source => {
-                try { source.stop(); } catch (e) { /* already stopped */ }
-            });
-            this.currentSources = [];
-        },
-        
-        // Create deep space humming
-        createDeepSpace: function(ctx) {
-            const sources = [];
-            
-            // Main hum
-            const hum = ctx.createOscillator();
-            const humGain = ctx.createGain();
-            hum.frequency.setValueAtTime(60, ctx.currentTime);
-            hum.type = 'sine';
-            humGain.gain.setValueAtTime(0.3, ctx.currentTime);
-            hum.connect(humGain);
-            humGain.connect(ctx.destination);
-            hum.start();
-            sources.push(hum);
-            
-            // Harmonic
-            const harmonic = ctx.createOscillator();
-            const harmonicGain = ctx.createGain();
-            harmonic.frequency.setValueAtTime(120, ctx.currentTime);
-            harmonic.type = 'triangle';
-            harmonicGain.gain.setValueAtTime(0.1, ctx.currentTime);
-            harmonic.connect(harmonicGain);
-            harmonicGain.connect(ctx.destination);
-            harmonic.start();
-            sources.push(harmonic);
-            
-            return sources;
-        },
-        
-        // Create cosmic winds
-        createCosmicWinds: function(ctx) {
-            const sources = [];
-            
-            // Create noise buffer
-            const bufferSize = ctx.sampleRate * 2;
-            const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-            const output = noiseBuffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                output[i] = Math.random() * 2 - 1;
-            }
-            
-            const whiteNoise = ctx.createBufferSource();
-            whiteNoise.buffer = noiseBuffer;
-            whiteNoise.loop = true;
-            
-            const filter = ctx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(800, ctx.currentTime);
-            
-            const windGain = ctx.createGain();
-            windGain.gain.setValueAtTime(0.2, ctx.currentTime);
-            
-            whiteNoise.connect(filter);
-            filter.connect(windGain);
-            windGain.connect(ctx.destination);
-            whiteNoise.start();
-            sources.push(whiteNoise);
-            
-            return sources;
-        },
-        
-        // Create stellar harmony
-        createStellarHarmony: function(ctx) {
-            const sources = [];
-            const frequencies = [220, 330, 440, 550];
-            
-            frequencies.forEach(freq => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                
-                osc.frequency.setValueAtTime(freq, ctx.currentTime);
-                osc.type = 'sine';
-                gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                sources.push(osc);
-            });
-            
-            return sources;
-        },
-        
-        // Create nebula dreams
-        createNebulaDreams: function(ctx) {
-            const sources = [];
-            
-            const pad1 = ctx.createOscillator();
-            const pad2 = ctx.createOscillator();
-            const padGain = ctx.createGain();
-            
-            pad1.frequency.setValueAtTime(110, ctx.currentTime);
-            pad2.frequency.setValueAtTime(165, ctx.currentTime);
-            pad1.type = 'sawtooth';
-            pad2.type = 'sawtooth';
-            
-            const filter = ctx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(400, ctx.currentTime);
-            
-            padGain.gain.setValueAtTime(0.15, ctx.currentTime);
-            
-            pad1.connect(filter);
-            pad2.connect(filter);
-            filter.connect(padGain);
-            padGain.connect(ctx.destination);
-            
-            pad1.start();
-            pad2.start();
-            sources.push(pad1, pad2);
-            
-            return sources;
-        },
-        
-        // Create quantum pulse
-        createQuantumPulse: function(ctx) {
-            const sources = [];
-            
-            const pulse = ctx.createOscillator();
-            const pulseGain = ctx.createGain();
-            
-            pulse.frequency.setValueAtTime(80, ctx.currentTime);
-            pulse.type = 'square';
-            pulseGain.gain.setValueAtTime(0.2, ctx.currentTime);
-            
-            pulse.connect(pulseGain);
-            pulseGain.connect(ctx.destination);
-            pulse.start();
-            sources.push(pulse);
-            
-            return sources;
-        },
-        
-        // Track definitions
-        tracks: {
-            'deep-space': { name: 'ðŸŒŒ Deep Space Humming', create: 'createDeepSpace' },
-            'cosmic-winds': { name: 'ðŸ’¨ Cosmic Winds', create: 'createCosmicWinds' },
-            'stellar-harmony': { name: 'â­ Stellar Harmony', create: 'createStellarHarmony' },
-            'nebula-dreams': { name: 'ðŸŒ  Nebula Dreams', create: 'createNebulaDreams' },
-            'quantum-pulse': { name: 'âš›ï¸ Quantum Pulse', create: 'createQuantumPulse' }
-        },
-        
-        // Play a track
-        play: function(trackId) {
-            console.log(`ðŸŽµ Playing: ${trackId}`);
-            
-            try {
-                this.stopAll();
-                
-                const ctx = this.initContext();
-                
-                if (ctx.state === 'suspended') {
-                    ctx.resume().then(() => {
-                        this.startTrack(trackId, ctx);
-                    });
-                } else {
-                    this.startTrack(trackId, ctx);
-                }
-            } catch (error) {
-                console.error('âŒ Play error:', error);
-                alert('Audio error: ' + error.message);
-            }
-        },
-        
-        // Start specific track
-        startTrack: function(trackId, ctx) {
-            const track = this.tracks[trackId];
-            if (track && this[track.create]) {
-                this.currentSources = this[track.create](ctx);
-                this.currentTrack = trackId;
-                this.isPlaying = true;
-                this.updateUI();
-                console.log(`âœ… Playing: ${track.name}`);
-            }
-        },
-        
-        // Stop audio
-        stop: function() {
-            this.stopAll();
-            this.isPlaying = false;
-            this.updateUI();
-            console.log('â¹ï¸ Audio stopped');
-        },
-        
-        // Update UI
-        updateUI: function() {
-            const audioToggle = document.getElementById('audioToggle');
-            if (audioToggle) {
-                if (this.isPlaying) {
-                    audioToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
-                    audioToggle.classList.remove('muted');
-                    audioToggle.title = 'Stop Audio';
-                    audioToggle.style.boxShadow = '0 0 30px rgba(255, 140, 0, 0.8)';
-                } else {
-                    audioToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                    audioToggle.classList.add('muted');
-                    audioToggle.title = 'Play Audio';
-                    audioToggle.style.boxShadow = '0 0 20px rgba(255, 140, 0, 0.3)';
-                }
-            }
-        }
-    };
-    
-    // Initialize when DOM is ready
-    function initCosmicAudio() {
-        console.log('ðŸŽµ Initializing Cosmic Audio System...');
-        
-        // Main audio button
-        const audioToggle = document.getElementById('audioToggle');
-        if (audioToggle) {
-            console.log('âœ… Audio button found');
-            audioToggle.addEventListener('click', () => {
-                console.log('ðŸŽµ Button clicked, isPlaying:', COSMIC_AUDIO.isPlaying);
-                if (COSMIC_AUDIO.isPlaying) {
-                    COSMIC_AUDIO.stop();
-                } else {
-                    COSMIC_AUDIO.play(COSMIC_AUDIO.currentTrack);
-                }
-            });
-            COSMIC_AUDIO.updateUI();
-        } else {
-            console.error('âŒ Audio button not found');
-        }
-        
-        // Playlist functionality
-        const playlistToggle = document.getElementById('playlistToggle');
-        const musicPlaylist = document.getElementById('musicPlaylist');
-        
-        if (playlistToggle && musicPlaylist) {
-            playlistToggle.addEventListener('click', () => {
-                if (musicPlaylist.style.display === 'none' || !musicPlaylist.style.display) {
-                    musicPlaylist.style.display = 'block';
-                    playlistToggle.innerHTML = '<i class="fas fa-times"></i>';
-                } else {
-                    musicPlaylist.style.display = 'none';
-                    playlistToggle.innerHTML = '<i class="fas fa-list"></i>';
-                }
-            });
-        }
-        
-        // Track selection
-        document.querySelectorAll('.track-item').forEach(trackElement => {
-            trackElement.addEventListener('click', () => {
-                const trackId = trackElement.dataset.track;
-                console.log(`ðŸŽ¶ Track selected: ${trackId}`);
-                
-                if (trackId && COSMIC_AUDIO.tracks[trackId]) {
-                    COSMIC_AUDIO.currentTrack = trackId;
-                    COSMIC_AUDIO.play(trackId);
-                    
-                    // Update UI
-                    document.querySelectorAll('.track-item').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                    trackElement.classList.add('active');
-                    
-                    // Hide playlist
-                    if (musicPlaylist) {
-                        musicPlaylist.style.display = 'none';
-                        playlistToggle.innerHTML = '<i class="fas fa-list"></i>';
+const heroSection = document.querySelector('.hero');
+if (heroSection) {
+    const heroObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                document.querySelectorAll('.stat-number').forEach(stat => {
+                    const text = stat.textContent;
+                    const number = parseInt(text.replace(/\D/g, ''));
+                    const hasSuffix = text.includes('+') ? '+' : (text.includes('K') ? 'K+' : '');
+                    if (number) {
+                        stat.textContent = '0';
+                        setTimeout(() => {
+                            animateCounter(stat, number, 2000);
+                            setTimeout(() => {
+                                if (text.includes('+')) stat.textContent = number + '+';
+                                if (text.includes('K+')) stat.textContent = number + 'K+';
+                            }, 2100);
+                        }, 500);
                     }
-                }
-            });
+                });
+                heroObserver.unobserve(entry.target);
+            }
         });
-        
-        console.log('ðŸŽµ COSMIC AUDIO SYSTEM READY!');
-        console.log('ðŸŽ›ï¸ Click the speaker button to start!');
+    });
+    heroObserver.observe(heroSection);
+}
+
+// ---- STAT HOVER (desktop only) ----
+if (!isMobile) {
+    document.querySelectorAll('.stat').forEach(stat => {
+        stat.addEventListener('mouseenter', () => { stat.style.transform = 'translateY(-10px) scale(1.05)'; });
+        stat.addEventListener('mouseleave', () => { stat.style.transform = 'translateY(0) scale(1)'; });
+    });
+
+    // Profile card hover
+    const profileCard = document.querySelector('.profile-card');
+    if (profileCard) {
+        profileCard.addEventListener('mouseenter', () => { profileCard.style.transform = 'translateY(-10px) scale(1.02)'; });
+        profileCard.addEventListener('mouseleave', () => { profileCard.style.transform = 'translateY(0) scale(1)'; });
     }
-    
-    // Global test functions
-    window.testCosmicAudio = function() {
-        console.log('ðŸ§ª Testing cosmic audio...');
-        if (COSMIC_AUDIO.isPlaying) {
-            COSMIC_AUDIO.stop();
-        } else {
-            COSMIC_AUDIO.play('deep-space');
+}
+
+// ---- THEME (kept minimal) ----
+function applyTheme(mood) {
+    document.body.className = document.body.className.replace(/theme-\w+/g, '');
+    document.body.classList.add(`theme-${mood}`);
+}
+
+// ---- COSMIC SCENE: desktop only ----
+// On mobile, skip ALL cosmic JS — CSS already hides elements,
+// but JS was re-showing them which broke scroll
+if (!isMobile) {
+    document.addEventListener('DOMContentLoaded', () => {
+        applyTheme('excited');
+        document.body.style.opacity = '1';
+
+        const cosmicScene = document.querySelector('.cosmic-scene');
+        if (cosmicScene) {
+            cosmicScene.style.display = 'block';
+            cosmicScene.style.visibility = 'visible';
+            cosmicScene.style.opacity = '1';
+            cosmicScene.style.zIndex = '-1';
         }
-    };
-    
-    window.testBeep = function() {
-        console.log('ðŸ”” Testing beep...');
-        try {
-            const ctx = COSMIC_AUDIO.initContext();
-            if (ctx.state === 'suspended') ctx.resume();
-            
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            
-            osc.frequency.setValueAtTime(800, ctx.currentTime);
-            osc.type = 'sine';
-            gain.gain.setValueAtTime(0.3, ctx.currentTime);
-            
-            osc.start();
-            osc.stop(ctx.currentTime + 0.5);
-            
-            console.log('âœ… Beep played');
-        } catch (error) {
-            console.error('âŒ Beep failed:', error);
+
+        // Show cosmic elements on desktop
+        ['.solar-system','.wormhole','.blackhole-system','.blackhole-center','.accretion-disk','.event-horizon'].forEach(sel => {
+            const el = document.querySelector(sel);
+            if (el) { el.style.display = 'block'; el.style.visibility = 'visible'; el.style.opacity = '1'; }
+        });
+    });
+
+    // Mouse parallax on black hole (desktop only)
+    document.addEventListener('mousemove', (e) => {
+        const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+        const blackholeCenter = document.querySelector('.blackhole-center');
+        const gravitationalLensing = document.querySelector('.gravitational-lensing');
+        if (blackholeCenter) blackholeCenter.style.transform = `translate(${-50 + mouseX * 2}%, ${-50 + mouseY * 2}%)`;
+        if (gravitationalLensing) gravitationalLensing.style.transform = `translate(${-50 + mouseX}%, ${-50 + mouseY}%)`;
+    });
+
+    // Wormhole scroll effect (desktop only)
+    window.addEventListener('scroll', () => {
+        const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+        const wormhole = document.querySelector('.wormhole');
+        if (wormhole) {
+            wormhole.style.transform = `translate(-50%, -50%) scale(${1 + scrollPercent * 2})`;
         }
-    };
-    
-    // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initCosmicAudio);
-    } else {
-        initCosmicAudio();
+        const accretionDisk = document.querySelector('.accretion-disk');
+        if (accretionDisk) {
+            accretionDisk.style.animationDuration = `${Math.max(12 - scrollPercent * 8, 2)}s`;
+        }
+    }, { passive: true });
+
+    // Floating elements parallax (desktop only)
+    window.addEventListener('scroll', () => {
+        document.querySelectorAll('.float-item').forEach(el => {
+            const speed = el.dataset.speed || 1;
+            el.style.transform = `translateY(${-(window.pageYOffset * speed * 0.1)}px)`;
+        });
+    }, { passive: true });
+}
+
+// ---- MOBILE: ensure body scrolls freely ----
+if (isMobile) {
+    document.body.style.overflow = 'auto';
+    document.body.style.overflowX = 'hidden';
+    document.body.style.webkitOverflowScrolling = 'touch';
+    document.documentElement.style.overflow = 'auto';
+    document.documentElement.style.overflowX = 'hidden';
+}
+
+// ---- COSMIC AUDIO SYSTEM ----
+const COSMIC_AUDIO = {
+    isPlaying: false,
+    audioContext: null,
+    currentSources: [],
+    currentTrack: 'deep-space',
+    initContext() {
+        if (!this.audioContext) this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        return this.audioContext;
+    },
+    stopAll() {
+        this.currentSources.forEach(s => { try { s.stop(); } catch(e) {} });
+        this.currentSources = [];
+    },
+    play(trackId) {
+        this.stopAll();
+        const ctx = this.initContext();
+        const resume = () => this.startTrack(trackId, ctx);
+        ctx.state === 'suspended' ? ctx.resume().then(resume) : resume();
+    },
+    startTrack(trackId, ctx) {
+        const creators = {
+            'deep-space': (ctx) => {
+                const hum = ctx.createOscillator(); const g = ctx.createGain();
+                hum.frequency.value = 60; hum.type = 'sine'; g.gain.value = 0.3;
+                hum.connect(g); g.connect(ctx.destination); hum.start(); return [hum];
+            },
+            'cosmic-winds': (ctx) => {
+                const buf = ctx.createBuffer(1, ctx.sampleRate*2, ctx.sampleRate);
+                const data = buf.getChannelData(0);
+                for (let i=0;i<data.length;i++) data[i]=Math.random()*2-1;
+                const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+                const f = ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=800;
+                const g = ctx.createGain(); g.gain.value=0.2;
+                src.connect(f); f.connect(g); g.connect(ctx.destination); src.start(); return [src];
+            },
+            'stellar-harmony': (ctx) => {
+                return [220,330,440,550].map(freq => {
+                    const o=ctx.createOscillator(); const g=ctx.createGain();
+                    o.frequency.value=freq; o.type='sine'; g.gain.value=0.08;
+                    o.connect(g); g.connect(ctx.destination); o.start(); return o;
+                });
+            },
+            'nebula-dreams': (ctx) => {
+                const p1=ctx.createOscillator(); const p2=ctx.createOscillator();
+                const f=ctx.createBiquadFilter(); const g=ctx.createGain();
+                p1.frequency.value=110; p2.frequency.value=165;
+                p1.type=p2.type='sawtooth'; f.type='lowpass'; f.frequency.value=400; g.gain.value=0.15;
+                p1.connect(f); p2.connect(f); f.connect(g); g.connect(ctx.destination);
+                p1.start(); p2.start(); return [p1,p2];
+            },
+            'quantum-pulse': (ctx) => {
+                const o=ctx.createOscillator(); const g=ctx.createGain();
+                o.frequency.value=80; o.type='square'; g.gain.value=0.2;
+                o.connect(g); g.connect(ctx.destination); o.start(); return [o];
+            }
+        };
+        if (creators[trackId]) {
+            this.currentSources = creators[trackId](ctx);
+            this.currentTrack = trackId;
+            this.isPlaying = true;
+            this.updateUI();
+        }
+    },
+    stop() { this.stopAll(); this.isPlaying = false; this.updateUI(); },
+    updateUI() {
+        const btn = document.getElementById('audioToggle');
+        if (!btn) return;
+        btn.innerHTML = this.isPlaying ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+        btn.style.boxShadow = this.isPlaying ? '0 0 30px rgba(255,140,0,0.8)' : '0 0 20px rgba(255,140,0,0.3)';
     }
-    
-})();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const audioToggle = document.getElementById('audioToggle');
+    if (audioToggle) {
+        audioToggle.addEventListener('click', () => {
+            COSMIC_AUDIO.isPlaying ? COSMIC_AUDIO.stop() : COSMIC_AUDIO.play(COSMIC_AUDIO.currentTrack);
+        });
+        COSMIC_AUDIO.updateUI();
+    }
+    const playlistToggle = document.getElementById('playlistToggle');
+    const musicPlaylist = document.getElementById('musicPlaylist');
+    if (playlistToggle && musicPlaylist) {
+        playlistToggle.addEventListener('click', () => {
+            const visible = musicPlaylist.style.display === 'block';
+            musicPlaylist.style.display = visible ? 'none' : 'block';
+            playlistToggle.innerHTML = visible ? '<i class="fas fa-list"></i>' : '<i class="fas fa-times"></i>';
+        });
+    }
+    document.querySelectorAll('.track-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const trackId = item.dataset.track;
+            if (trackId) {
+                COSMIC_AUDIO.currentTrack = trackId;
+                COSMIC_AUDIO.play(trackId);
+                document.querySelectorAll('.track-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                if (musicPlaylist) musicPlaylist.style.display = 'none';
+                if (playlistToggle) playlistToggle.innerHTML = '<i class="fas fa-list"></i>';
+            }
+        });
+    });
+});
