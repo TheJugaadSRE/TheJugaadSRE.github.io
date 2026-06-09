@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -85,15 +85,32 @@
                     <span class="highlight-number">10+</span>
                     <span class="highlight-label">Technical Articles</span>
                 </div>
-                <div class="highlight-item">
+
+                <!-- CHANGE 1: Speaking Engagements now links to badge + YouTube -->
+                <div class="highlight-item" style="cursor:pointer;">
                     <div class="highlight-icon"><i class="fas fa-microphone"></i></div>
                     <span class="highlight-number">10+</span>
                     <span class="highlight-label">Speaking Engagements</span>
+                    <div style="display:flex;gap:0.75rem;justify-content:center;margin-top:0.5rem;flex-wrap:wrap;">
+                        <a href="https://globalai.community/badges/d2d61fb3-5a04-4523-bf7e-16f9224c3043/" target="_blank" rel="noopener"
+                           style="font-size:0.75rem;color:#ff8c00;text-decoration:none;border:1px solid #ff8c00;padding:2px 8px;border-radius:12px;">
+                            <i class="fas fa-medal"></i> Badge
+                        </a>
+                        <a href="https://youtu.be/WbFbbhpkDP4?si=Cpb-L5VYoaXNUH5T" target="_blank" rel="noopener"
+                           style="font-size:0.75rem;color:#ff0000;text-decoration:none;border:1px solid #ff0000;padding:2px 8px;border-radius:12px;">
+                            <i class="fab fa-youtube"></i> Watch
+                        </a>
+                    </div>
                 </div>
+
+                <!-- CHANGE 2 & 3: Removed "Work in progress", added community memberships -->
                 <div class="highlight-item">
                     <div class="highlight-icon"><i class="fas fa-globe"></i></div>
-                    <span class="highlight-number">Work in progress</span>
-                    <span class="highlight-label">Community Members</span>
+                    <span class="highlight-label" style="font-size:0.85rem;text-align:center;line-height:1.6;">
+                        <strong style="display:block;margin-bottom:0.4rem;">Community Member</strong>
+                        <span style="display:block;">🟠 AWS User Group Pune</span>
+                        <span style="display:block;">🔵 Atlassian Community — Volunteer</span>
+                    </span>
                 </div>
             </div>
 
